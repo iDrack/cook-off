@@ -26,5 +26,10 @@ export default defineNuxtConfig({
         braceStyle: '1tbs'
       }
     }
+  },
+
+  mongoose: {
+    uri: process.env.NUXT_MONGOOSE_URI,
+    modelsDir: 'models',
   }
 })
