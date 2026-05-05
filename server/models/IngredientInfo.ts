@@ -8,22 +8,19 @@ export interface IngredientInfoDocument {
 }
 
 export const IngredientInfoSchema = {
-  name: "IngredientInfo",
-  schema: {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    quantity: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    unit: {
-      type: String,
-      enum: Object.values(Unit),
-      required: true,
-    },
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+    min: 0,
+  },
+  unit: {
+    type: String,
+    enum: Object.values(Unit),
+    required: true,
   },
 };
