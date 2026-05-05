@@ -10,6 +10,14 @@
     </template>
     <HeaderNavigationDefault/>
     <template #right>
+      <UButton
+        to="/"
+        icon="i-lucide-search"
+        aria-label="Rechercher"
+        color="neutral"
+        variant="ghost"
+      />
+
       <UColorModeButton />
 
       <UButton
