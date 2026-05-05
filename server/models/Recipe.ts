@@ -12,7 +12,7 @@ export interface RecipeDocument {
   category: Category;
   ingredients: IngredientInfoDocument[];
   steps: string[];
-  picturePath: string,
+  picturePath: string;
   createdDate: Date;
   updatedDate: Date;
 }
@@ -76,10 +76,13 @@ export const Recipe = defineMongooseModel<RecipeDocument>({
       type: Date,
       required: true,
       default: Date.now,
-    }
+    },
   },
   options: {
-    timestamps: true,
-    collection: 'recipes'
-  }
+    timestamps: {
+      createdAt: "createdDate",
+      updatedAt: "updatedDate",
+    },
+    collection: "recipes",
+  },
 });
