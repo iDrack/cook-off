@@ -1,9 +1,9 @@
 export enum Category {
-  "SNACK" = "Snack",
   "ENTREE" = "Entrée",
-  "DISH" = "Plat",
   "SALAD" = "Salade",
+  "DISH" = "Plat",
   "DESSERT" = "Dessert",
+  "SNACK" = "Snack",
   "DRINK" = "Boisson",
   "COCKTAIL" = "Cocktail",
 }

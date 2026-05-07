@@ -1,9 +1,9 @@
 export enum CategoryIcon {
-  "SNACK" = "i-lucide-cookie",
   "ENTREE" = "i-lucide-utensils",
-  "DISH" = "i-lucide-cooking-pot",
   "SALAD" = "i-lucide-salad",
+  "DISH" = "i-lucide-cooking-pot",
   "DESSERT" = "i-lucide-cake-slice",
+  "SNACK" = "i-lucide-cookie",
   "DRINK" = "i-lucide-glass-water",
   "COCKTAIL" = "i-lucide-martini",
 }
