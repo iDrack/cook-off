@@ -17,7 +17,7 @@ const items = computed(() => {
     const ret = []
     for (let i = 1; i < 11; i++) {
         ret.push({
-            label: `Pour ${i}`,
+            label: `Pour: ${i}`,
             value: i,
             icon: 'i-lucide-users'
         });
@@ -27,7 +27,7 @@ const items = computed(() => {
 </script>
 
 <template>
-    <USelectMenu v-model="localValue" :items="items" value-key="value" placeholder="Pour: ?" :icon="'i-lucide-users'"
+    <USelectMenu class="w-32" v-model="localValue" :items="items" value-key="value" placeholder="Pour: ?" :icon="'i-lucide-users'"
         :search-input="{
             placeholder: 'Chercher...',
             icon: 'i-lucide-search'

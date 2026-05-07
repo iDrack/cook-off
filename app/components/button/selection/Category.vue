@@ -8,6 +8,15 @@ const emit = defineEmits<{
     change: [value: Category]
 }>()
 
+const props = defineProps<({
+    selectedCategory: Category
+})>()
+
+const localValue = computed({
+    get: () => props.selectedCategory || null,
+    set: (value: Category) => emit('change', value)
+})
+
 const items = computed(() =>
     (Object.keys(Category) as CategoryKey[]).map((key) => ({
         label: Category[key],
@@ -15,19 +24,12 @@ const items = computed(() =>
         icon: CategoryIcon[key]
     })));
 
-const selected = ref<Category | undefined>(undefined)
 
-const selectedItem = computed(() => items.value.find(item => item.value === selected.value))
-
-watch(selected, (value) => {
-    if (value) {
-        emit('change', value)
-    }
-});
+const selectedItem = computed(() => items.value.find(item => item.value === localValue.value));
 </script>
 
 <template>
-    <USelectMenu v-model="selected" :items="items" value-key="value" placeholder="Catégorie"
+    <USelectMenu class="w-32" v-model="localValue" :items="items" value-key="value" placeholder="Catégorie"
         :icon="selectedItem?.icon || 'i-lucide-menu'" :search-input="{
             placeholder: 'Chercher...',
             icon: 'i-lucide-search'
