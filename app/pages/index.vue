@@ -10,7 +10,7 @@
         size: 'xl'
       }, {
         label: 'Créer une nouvelle recette',
-        to: '/createRecipe',
+        to: '/create-recipe',
         icon: 'i-lucide-pen',
         size: 'xl',
         color: 'neutral',

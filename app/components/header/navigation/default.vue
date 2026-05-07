@@ -22,8 +22,8 @@ const items = computed<NavigationMenuItem[]>(() => [
         {
         label: "Nouvelle recette",
         icon: 'i-lucide-plus',
-        to: '/createRecipe',
-        active: route.path === '/createRecipe'
+        to: '/create-recipe',
+        active: route.path === '/create-recipe'
     },
 ])
 </script>

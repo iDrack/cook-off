@@ -1,5 +1,5 @@
 import { defineMongooseModel } from "#nuxt/mongoose";
-import { Category } from "./Category";
+import { Category } from "../../app/shared/models/Category";
 import { IngredientInfoSchema, IngredientInfoDocument } from "./IngredientInfo";
 
 export interface RecipeDocument {
