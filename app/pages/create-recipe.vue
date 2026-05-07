@@ -29,14 +29,20 @@ const sendRecipe = async () => {
 
 const onCategoryChange = (value: Category) => {
     recipe.value.category = value;
-    console.log(value);
+    console.log(recipe.value);
+}
+
+const onDefaultPeopleChange = (value: number) => {
+    recipe.value.defaultNbPeople = value
+    console.log(recipe.value);
 }
 </script>
 
 <template>
     <UPageSection>
         test
-    <ButtonSelectionCategory @change="onCategoryChange"/>
+        <ButtonSelectionCategory @change="onCategoryChange" />
+        <ButtonSelectionDefaultPeople :selected-number="recipe.defaultNbPeople" @change="onDefaultPeopleChange" />
     </UPageSection>
 </template>
 

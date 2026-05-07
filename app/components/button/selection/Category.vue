@@ -17,7 +17,7 @@ const items = computed(() =>
 
 const selected = ref<Category | undefined>(undefined)
 
-    const selectedItem =computed(() => items.value.find(item => item.value === selected.value))
+const selectedItem = computed(() => items.value.find(item => item.value === selected.value))
 
 watch(selected, (value) => {
     if (value) {
@@ -27,18 +27,11 @@ watch(selected, (value) => {
 </script>
 
 <template>
-    <USelectMenu 
-        v-model="selected" 
-        :items="items" 
-        value-key="value" 
-        placeholder="Catégorie" 
-        :icon="selectedItem?.icon || 'i-lucide-menu'"
-        :search-input="{
-        placeholder: 'Chercher...',
-        icon: 'i-lucide-search'
-
-
-    }" />
+    <USelectMenu v-model="selected" :items="items" value-key="value" placeholder="Catégorie"
+        :icon="selectedItem?.icon || 'i-lucide-menu'" :search-input="{
+            placeholder: 'Chercher...',
+            icon: 'i-lucide-search'
+        }" />
 </template>
 
 <style scoped></style>
