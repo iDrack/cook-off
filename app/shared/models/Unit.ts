@@ -7,5 +7,5 @@ export enum Unit {
   LITER = "L",
   TEASPOON = "cuillère à café",
   TABLESPOON = "cuillère à sucre",
-  NONE = "",
+  NONE = "Aucune unité",
 }

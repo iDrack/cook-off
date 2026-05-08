@@ -1,5 +1,5 @@
 import { defineMongooseModel } from "#nuxt/mongoose";
-import { Unit } from "./Unit";
+import { Unit } from "../../app/shared/models/Unit";
 
 export interface IngredientInfoDocument {
   name: string;
