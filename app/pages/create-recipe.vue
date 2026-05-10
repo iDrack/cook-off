@@ -3,6 +3,7 @@ import { Category } from '~/shared/models/Category';
 import { Unit } from '~/shared/models/Unit';
 import type { RecipeCreatePayload } from '~/shared/models/RecipeCreatePayload';
 import * as v from "valibot";
+import type { RecipeDocument } from '~~/server/models/Recipe';
 
 const toast = useToast();
 
@@ -64,37 +65,54 @@ const addNewStep = () => {
 
 // Recipe
 const sendRecipe = async () => {
-  console.log(recipe);
-  if(newIngredient.value.name !== "" && newIngredient.value.quantity > 0) {
-    addNewIngredient()
-  }
+  try {
+    if (newIngredient.value.name !== "" && newIngredient.value.quantity > 0) {
+      addNewIngredient()
+    }
 
-  if (newStep.value !== "") {
-    addNewStep()
-  }
+    if (newStep.value !== "") {
+      addNewStep()
+    }
 
-  /*   const res = $fetch(`/api/recipes`, {
+    if (!recipe.value.title.trim()) {
+      toast.add({ title: 'Erreur', description: 'Le titre est obligatoire.', color: 'error' })
+      return
+    }
+
+    if (!recipe.value.description.trim()) {
+      toast.add({ title: 'Erreur', description: 'La description est obligatoire.', color: 'error' })
+      return
+    }
+
+    const res = await $fetch<RecipeDocument>(`/api/recipes`, {
       method: 'POST',
       body: recipe.value
     });
-  
-    console.log(res); */
+
+    if (res) {      
+      toast.add({ title: "Recette enregistrée.", description: `La recette "${res.title}" a été enregistré avec succès.`, color: "success", icon: "i-lucide-check" });
+      //TODO: Enchainer avec l'ajout de photo
+      clearRecipe(false);
+    }
+  } catch (error) {
+    if (isNuxtError(error)) {
+      toast.add({ title: "Erreur", description: error.message, color: "info", icon: "i-lucide-triangle-alert" });
+    }
+  }
 }
 
 //Category
 const onCategoryChange = (value: Category) => {
   recipe.value.category = value;
-  console.log(recipe.value);
 }
 
 //Nb People
 const onDefaultPeopleChange = (value: number) => {
   recipe.value.defaultNbPeople = value
-  console.log(recipe.value);
 }
 
 //Clear recipe
-const clearRecipe = () => {
+const clearRecipe = (showMsg: boolean) => {
   newStep.value = "";
   newIngredient.value = {
     name: "",
@@ -112,7 +130,7 @@ const clearRecipe = () => {
     ingredients: [],
     steps: [],
   }
-  toast.add({ title: "Supprimé", description: "La recette a été remise à zéro.", color: "info", icon: "i-lucide-info" })
+  if (showMsg) toast.add({ title: "Supprimé", description: "La recette a été remise à zéro.", color: "info", icon: "i-lucide-info" })
 }
 
 
@@ -144,7 +162,7 @@ const fileUploadState = reactive<Partial<FileUploadSchema>>({
           </div>
           <div class="space-x-2">
             <ButtonRecipeSaveLater :recipe="recipe" />
-            <UButton icon="i-lucide-eraser" @click="clearRecipe()" color="error" variant="subtle" :square="true" />
+            <UButton icon="i-lucide-eraser" @click="clearRecipe(true)" color="error" variant="subtle" :square="true" />
           </div>
         </div>
       </div>

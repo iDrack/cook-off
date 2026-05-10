@@ -1,4 +1,6 @@
+import type { RecipeData } from "~~/server/models/Recipe";
+
 export type RecipeCreatePayload = Omit<
-    RecipeDocument,
+    RecipeData,
     'picturePath' | 'createdDate' | 'updatedDate'
 >

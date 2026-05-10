@@ -1,8 +1,9 @@
 import { defineMongooseModel } from "#nuxt/mongoose";
+import { Types } from 'mongoose';
 import { Category } from "../../app/shared/models/Category";
 import { IngredientInfoSchema, IngredientInfoDocument } from "./IngredientInfo";
 
-export interface RecipeDocument {
+export interface RecipeData {
   title: string;
   description: string;
   tips?: string;
@@ -15,6 +16,10 @@ export interface RecipeDocument {
   picturePath: string;
   createdDate: Date;
   updatedDate: Date;
+}
+
+export interface RecipeDocument extends RecipeData {
+  _id: Types.ObjectId,
 }
 
 export const Recipe = defineMongooseModel<RecipeDocument>({
