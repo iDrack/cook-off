@@ -17,7 +17,10 @@ await recipeStore.fetchRandomPick();
         size: 'xl',
         color: 'neutral',
         variant: 'subtle'
-      }]" />
+      }]" 
+        :ui="{
+    container: 'flex flex-col lg:grid pb-8 sm:pb-10 lg:pb-12 gap-8 sm:gap-16'
+  }"/>
 
     <UPageSection id="recipes"
       :title="!recipeStore.hasLoaded || recipeStore.isLoading ? '' : recipeStore.randomPick.length > 0 ? 'Trop de choix ? Pourquoi ne pas essayer ces recettes ?' : 'Vous n\'avez pas encore de recette enregistré !'">
