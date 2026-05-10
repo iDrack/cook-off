@@ -4,6 +4,7 @@ import { Unit } from '~/shared/models/Unit';
 import type { RecipeCreatePayload } from '~/shared/models/RecipeCreatePayload';
 import * as v from "valibot";
 import type { RecipeDocument } from '~~/server/models/Recipe';
+import type { FormSubmitEvent } from '@nuxt/ui';
 
 const toast = useToast();
 
@@ -89,9 +90,14 @@ const sendRecipe = async () => {
       body: recipe.value
     });
 
-    if (res) {      
+    if (res) {
       toast.add({ title: "Recette enregistrée.", description: `La recette "${res.title}" a été enregistré avec succès.`, color: "success", icon: "i-lucide-check" });
       //TODO: Enchainer avec l'ajout de photo
+      if (file.value) {
+        const response = await sendImage(file.value, String(res._id))
+        console.log(response);
+
+      }
       clearRecipe(false);
     }
   } catch (error) {
@@ -114,6 +120,7 @@ const onDefaultPeopleChange = (value: number) => {
 //Clear recipe
 const clearRecipe = (showMsg: boolean) => {
   newStep.value = "";
+  file.value = null;
   newIngredient.value = {
     name: "",
     quantity: 0,
@@ -135,17 +142,26 @@ const clearRecipe = (showMsg: boolean) => {
 
 
 //Photo management
-const fileUploadSchema = v.object({
-  file: v.pipe(
-    v.file()
-  )
-});
+const file = ref<File | null>(null)
 
-type FileUploadSchema = v.InferOutput<typeof fileUploadSchema>
+const sendImage = async (file: File, id: string) => {
+  try {
+    const res = await $fetch(`/api/recipes/${id}/image`, {
+      method: "POST",
+      body: file,
+      headers: {
+        "content-type": file.type,
+        "x-file-name": file.name,
+      },
+    })
 
-const fileUploadState = reactive<Partial<FileUploadSchema>>({
-  file: undefined
-});
+    console.log(res);
+  } catch (error) {
+    if (isNuxtError(error)) {
+      toast.add({ title: "Erreur", description: error.message, color: "info", icon: "i-lucide-triangle-alert" });
+    }
+  }
+}
 </script>
 
 <template>
@@ -203,8 +219,8 @@ const fileUploadState = reactive<Partial<FileUploadSchema>>({
       <!--Picture-->
       <div class="flex-1 min-w-0">
         <h1 class="text-2xl font-semibold pb-2">Photo</h1>
-        <UFileUpload :dropzone="true" v-model="fileUploadState.file" label="Ajouter une photo à votre recette"
-          size="xl" />
+        <UFileUpload :dropzone="true" v-model="file" label="Ajouter une photo à votre recette" 
+          accept="image/png,image/jpg,image/jpeg,image/webp" class="w-full min-h-48"/>
       </div>
     </div>
     <!--Steps-->
