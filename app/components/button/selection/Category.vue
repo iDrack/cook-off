@@ -21,7 +21,7 @@ const items = computed(() =>
     (Object.keys(Category) as CategoryKey[]).map((key) => ({
         label: Category[key],
         value: Category[key],
-        icon: CategoryIcon[key]
+        icon: CategoryIcon[Category[key]]
     })));
 
 

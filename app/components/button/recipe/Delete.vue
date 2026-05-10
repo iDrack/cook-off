@@ -1,13 +1,18 @@
 <script setup lang='ts'>
+const emit = defineEmits<{
+    delete: []
+}>()
+
 const props = defineProps({
-    id: Number
+    id: String
 });
 
 const toast = useToast();
+const recipeStore = useRecipeStore();
 const deleteRecipe = async () => {
-    console.log(props.id);
-    //TODO: add route for recipe deletion by id
-    toast.add({ title: "Supprimée", description: "Recette supprimée avec succès.", color: "error", icon: "i-lucide-triangle-alert" });
+    const res = await recipeStore.deleteRecipe(String(props.id))
+    toast.add({ title: "Recette supprimée avec succès", description: `${res} a été supprimé.`, color: "error", icon: "i-lucide-triangle-alert" });
+    emit('delete');
 }
 </script>
 
