@@ -17,22 +17,26 @@ await recipeStore.fetchRandomPick();
         size: 'xl',
         color: 'neutral',
         variant: 'subtle'
-      }]" 
-        :ui="{
-    container: 'flex flex-col lg:grid pb-8 sm:pb-10 lg:pb-12 gap-8 sm:gap-16'
-  }"/>
+      }]" :ui="{
+        container: 'flex flex-col lg:grid pb-8 sm:pb-10 lg:pb-12 gap-8 sm:gap-16'
+      }" />
 
-    <UPageSection id="recipes"
-      :title="!recipeStore.hasLoaded || recipeStore.isLoading ? '' : recipeStore.randomPick.length > 0 ? 'Trop de choix ? Pourquoi ne pas essayer ces recettes ?' : 'Vous n\'avez pas encore de recette enregistré !'">
+    <UPageSection id="recipes" :title="!recipeStore.hasLoaded || recipeStore.isLoading ?
+      '' : recipeStore.randomPick.length > 0 ?
+        'Trop de choix ? Pourquoi ne pas essayer ces recettes ?' :
+        'Vous n\'avez pas encore de recette enregistré !'">
       <div v-if="!recipeStore.hasLoaded || recipeStore.isLoading">
-
       </div>
       <div v-else-if="recipeStore.randomPick.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <CardRecipe v-for="(item, index) in recipeStore.randomPick" :key="index" :id="String(item._id)"
-          :title="item.title" :description="item.description" :category="item.category" :photo-url="item.picturePath" :show-delete="false" :show-edit="true"/>
+          :title="item.title" :description="item.description" :category="item.category" :photo-url="item.picturePath"
+          :show-delete="false" :show-edit="true" />
       </div>
       <div v-else>
-
+        <div class="flex justify-center">
+          <UButton label="Créer une nouvelle recette" to="/create-recipe" icon="'i-lucide-pen" size="xl" color="neutral"
+            variant="subtle" />
+        </div>
       </div>
     </UPageSection>
 

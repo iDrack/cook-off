@@ -39,8 +39,11 @@ const variant = computed(() => isHover.value ? 'subtle' : 'outline')
       <div v-if="props.photoUrl && props.photoUrl !== ''" class="h-71 w-full overflow-hidden rounded-lg">
         <img :src="photoUrl" class="h-full w-full object-cover" />
       </div>
-      <div v-else class="h-56 w-full flex items-center justify-center">
-        <h2>Pas d'image disponible.</h2>
+      <div v-else class="h-71 w-full rounded-lg bg-elevated flex items-center justify-center">
+        <div class="flex flex-col items-center gap-2 text-muted">
+          <UIcon name="i-lucide-image-off" class="size-8" />
+          <span class="text-sm">Pas d'image disponible</span>
+        </div>
       </div>
     </UCard>
   </NuxtLink>
