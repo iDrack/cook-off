@@ -153,8 +153,6 @@ const sendImage = async (file: File, id: string) => {
         "x-file-name": file.name,
       },
     })
-
-    console.log(res);
   } catch (error) {
     if (isNuxtError(error)) {
       toast.add({ title: "Erreur", description: error.message, color: "info", icon: "i-lucide-triangle-alert" });
