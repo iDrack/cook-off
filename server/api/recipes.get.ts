@@ -7,46 +7,44 @@ import { Recipe } from "../models/Recipe";
 export default defineEventHandler(async (event): Promise<RecipesResponse> => {
   const query = getQuery(event);
 
-    if (Array.isArray(query.page)) {
+  if (Array.isArray(query.page)) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Le paramètre "page" ne doit être fourni qu’une seule fois.',
-    })
+      statusMessage:
+        'Le paramètre "page" ne doit être fourni qu’une seule fois.',
+    });
   }
 
   //Get query parameter 'page'
   const pageParam = query.page;
 
-    if (pageParam !== undefined && (typeof pageParam !== "string" || !/^[1-9]\d*$/.test(pageParam))) {
+  if (
+    pageParam !== undefined &&
+    (typeof pageParam !== "string" || !/^[1-9]\d*$/.test(pageParam))
+  ) {
     throw createError({
       statusCode: 400,
       statusMessage: 'Le paramètre "page" doit être un entier positif.',
-    })
-  }
-
-  const requestedPage = pageParam === undefined ? 1 : Number(pageParam)
-
-  if (Number.isNaN(requestedPage) || requestedPage <= 0) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Le paramètre "page" est invalide.',
     });
   }
 
-  //Set response metadata
+  //Number of pages
   const limit = 24;
   const totalItems = await Recipe.countDocuments();
   const totalPages = Math.ceil(totalItems / limit);
 
-  const offset = (requestedPage - 1) * limit;
+  let requestedPage = pageParam === undefined ? 1 : Number(pageParam);
 
-  if (totalPages > 0 && requestedPage > totalPages) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Le paramètre "page" dépasse le nombre de pages disponibles.',
-    })
+  //Sanitize requestedPage value
+  if (requestedPage <= 0) {
+    const requestedPage = 1;
+  } else if (requestedPage > totalPages) {
+    const requestedPage = totalPages;
   }
 
+  const offset = (requestedPage - 1) * limit;
+
+  //Set response metadata
   const metadata = {
     page: requestedPage,
     totalPages: totalPages,
@@ -68,8 +66,8 @@ export default defineEventHandler(async (event): Promise<RecipesResponse> => {
 
   const data: RecipeDto[] = recipeList.map((recipe) => ({
     ...recipe,
-    _id: recipe._id.toString()
-  }))
+    _id: recipe._id.toString(),
+  }));
 
   return {
     metadata: metadata,

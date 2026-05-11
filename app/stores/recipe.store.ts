@@ -15,7 +15,7 @@ export const useRecipeStore = defineStore("recipe", () => {
 
   const fetchRecipes = async () => {
     if (isLoading.value) {
-      return
+      return;
     }
     isLoading.value = true;
     try {
@@ -25,16 +25,16 @@ export const useRecipeStore = defineStore("recipe", () => {
           page: currentPage.value,
         },
       });
-  
+
       totalPages.value = res.metadata.totalPages;
       totalItems.value = res.metadata.totalItems;
       prevPage.value = res.metadata.prevPage;
-      nextPage.value = res.metadata.nextPage;      
+      nextPage.value = res.metadata.nextPage;
       recipes.value = res.data;
     } catch (error) {
-      throw error
+      throw error;
     } finally {
-      isLoading.value = false
+      isLoading.value = false;
     }
   };
 
@@ -54,19 +54,27 @@ export const useRecipeStore = defineStore("recipe", () => {
     }
   };
 
-  const deleteRecipe = async (id: string) => {
-    isLoading.value = true;
+  const makeRecipeFavorite = async (id: string) => {
+    try {
+      const res = await $fetch(`/api/recipes/${id}/favorite`, {
+        method: "PUT",
+      });
+      await fetchRecipes();
+      return res;
+    } catch (error) {
+      throw error;
+    }
+  };
 
+  const deleteRecipe = async (id: string) => {
     try {
       const res = await $fetch(`/api/recipes/${id}` as "/api/recipes/:id", {
         method: "DELETE",
       });
+      await fetchRecipes();
       return res.title;
     } catch (error) {
       throw error;
-    } finally {
-      isLoading.value = false;
-      hasLoaded.value = true;
     }
   };
 
@@ -83,6 +91,7 @@ export const useRecipeStore = defineStore("recipe", () => {
     recipes: readonly(recipes),
     fetchRecipes,
     fetchRandomPick,
+    makeRecipeFavorite,
     deleteRecipe,
   };
 });

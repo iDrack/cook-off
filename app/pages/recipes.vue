@@ -47,6 +47,10 @@ const paginationPage = computed({
 
 try {
   await recipeStore.fetchRecipes();
+  if (recipeStore.recipes.length === 0) {
+    toast.add({ title: "Aucune recette trouvée.", description:"Créer une recette avant d'accéder à vos recettes.", color: "info", icon: "i-lucide-info" });
+    navigateTo('/create-recipe')
+  }
 } catch (error) {
   console.log(error);
   if (isNuxtError(error)) {
@@ -64,8 +68,8 @@ watch(recipes, (value) => {
   <UPageSection>
     <UPageGrid>
       <CardRecipe v-for="(item, index) in recipeStore.recipes" :key="index" :id="item._id" :title="item.title"
-        :description="item.description" :category="item.category" :photo-url="item.picturePath" :show-delete="true"
-        :show-edit="true" />
+        :description="item.description" :category="item.category" :photo-url="item.picturePath"
+        :is-favorite="item.isFavorite" :show-delete="true" :show-edit="true" />
     </UPageGrid>
     <div class="flex justify-center">
       <UPagination v-model:page="paginationPage" :total="totalItems" :items-per-page="limit" />

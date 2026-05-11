@@ -18,7 +18,7 @@ await recipeStore.fetchRandomPick();
         color: 'neutral',
         variant: 'subtle'
       }]" :ui="{
-        container: 'flex flex-col lg:grid pb-8 sm:pb-10 lg:pb-12 gap-8 sm:gap-16'
+        container: 'flex flex-col lg:grid pb-2 lg:pb-0 gap-8 sm:gap-16'
       }" />
 
     <UPageSection id="recipes" :title="!recipeStore.hasLoaded || recipeStore.isLoading ?
@@ -30,27 +30,14 @@ await recipeStore.fetchRandomPick();
       <div v-else-if="recipeStore.randomPick.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <CardRecipe v-for="(item, index) in recipeStore.randomPick" :key="index" :id="String(item._id)"
           :title="item.title" :description="item.description" :category="item.category" :photo-url="item.picturePath"
-          :show-delete="false" :show-edit="true" />
+          :is-favorite="item.isFavorite" :show-delete="false" :show-edit="true" />
       </div>
       <div v-else>
         <div class="flex justify-center">
-          <UButton label="Créer une nouvelle recette" to="/create-recipe" icon="'i-lucide-pen" size="xl" color="neutral"
+          <UButton label="Créer une nouvelle recette" to="/create-recipe" icon="i-lucide-pen" size="xl" color="neutral"
             variant="subtle" />
         </div>
       </div>
     </UPageSection>
-
-    <div v-if="recipeStore.isLoading">
-
-    </div>
-    <div v-else>
-      <div v-if="recipeStore.randomPick.length > 0">
-
-      </div>
-      <div v-else>
-        <UPageSection id="recipes" title="Vous n'avez pas encore de recette enregistré !">
-        </UPageSection>
-      </div>
-    </div>
   </div>
 </template>
