@@ -1,4 +1,7 @@
 <script setup lang='ts'>
+import type { Category } from '~/shared/models/Category';
+import type { SortInfo } from '~/shared/models/SortInfo';
+
 const route = useRoute();
 const router = useRouter();
 const toast = useToast();
@@ -11,7 +14,15 @@ const {
   totalItems,
   totalPages,
   isLoading,
+  sortInfo,
+  filters,
 } = storeToRefs(recipeStore);
+
+filters.value = {
+  category: undefined,
+  onlyFavorite: false,
+  onlyDraft: false,
+}
 
 const getPageFromQuery = (value: unknown) => {
   const page = Number(value)
@@ -48,7 +59,7 @@ const paginationPage = computed({
 try {
   await recipeStore.fetchRecipes();
   if (recipeStore.recipes.length === 0) {
-    toast.add({ title: "Aucune recette trouvée.", description:"Créer une recette avant d'accéder à vos recettes.", color: "info", icon: "i-lucide-info" });
+    toast.add({ title: "Aucune recette trouvée.", description: "Créer une recette avant d'accéder à vos recettes.", color: "info", icon: "i-lucide-info" });
     navigateTo('/create-recipe')
   }
 } catch (error) {
@@ -58,23 +69,49 @@ try {
   }
 }
 
-watch(recipes, (value) => {
-  console.log(recipes.value);
-})
+const onCategoryChange = (value: Category | undefined) => {
+  filters.value.category = value;
+}
+
+const onSortChange = async (value: SortInfo | undefined) => {
+  sortInfo.value = value
+  await recipeStore.fetchRecipes()
+}
+
+watch(filters, async (newValue) => {
+  await recipeStore.fetchRecipes();
+}, { deep: true });
 
 </script>
 
 <template>
-  <UPageSection>
-    <UPageGrid>
-      <CardRecipe v-for="(item, index) in recipeStore.recipes" :key="index" :id="item._id" :title="item.title"
-        :description="item.description" :category="item.category" :photo-url="item.picturePath"
-        :is-favorite="item.isFavorite" :show-delete="true" :show-edit="true" />
-    </UPageGrid>
-    <div class="flex justify-center">
-      <UPagination v-model:page="paginationPage" :total="totalItems" :items-per-page="limit" />
+  <UContainer class="pt-3 z-40">
+    <div class="flex flex-wrap gap-3 items-center">
+      <ButtonSelectionCategoryFilter :selected-category="filters.category" @change="onCategoryChange" />
+      <ButtonSelectionSort :selected-sort="sortInfo" @change="onSortChange" />
+      <div class="flex gap-1 items-center">
+        <UIcon name="i-lucide-star" />
+        <USwitch v-model="filters.onlyFavorite" />
+      </div>
+      <div class="flex gap-1 items-center">
+        <UIcon name="i-lucide-file-clock" />
+        <USwitch v-model="filters.onlyDraft" />
+      </div>
     </div>
-  </UPageSection>
+  </UContainer>
+  <UPage>
+    <UContainer class="py-10">
+      <UPageGrid>
+        <CardRecipe v-for="(item, index) in recipeStore.recipes" :key="index" :id="item._id" :title="item.title"
+          :description="item.description" :category="item.category" :photo-url="item.picturePath"
+          :is-favorite="item.isFavorite" :show-delete="true" :show-edit="true" />
+      </UPageGrid>
+    </UContainer>
+    <UContainer class="flex justify-center pb-8">
+      <UPagination v-model:page="paginationPage" :total="totalItems" :items-per-page="limit" />
+    </UContainer>
+  </UPage>
+
 </template>
 
 <style scoped></style>

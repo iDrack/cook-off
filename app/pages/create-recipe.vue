@@ -91,11 +91,8 @@ const sendRecipe = async () => {
 
     if (res) {
       toast.add({ title: "Recette enregistrée.", description: `La recette "${res.title}" a été enregistré avec succès.`, color: "success", icon: "i-lucide-check" });
-      //TODO: Enchainer avec l'ajout de photo
       if (file.value) {
         const response = await sendImage(file.value, String(res._id))
-        console.log(response);
-
       }
       clearRecipe(false);
     }
@@ -161,7 +158,7 @@ const sendImage = async (file: File, id: string) => {
 }
 </script>
 
-<template>
+<template>  
   <UPageSection>
     <!--Title-->
     <div class="w-full">

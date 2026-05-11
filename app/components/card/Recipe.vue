@@ -18,9 +18,6 @@ const props = defineProps<{
 const categoryIcon = computed(() => CategoryIcon[props.category]);
 const page = computed(() => `/recipes/${props.id}`)
 const variant = computed(() => isHover.value ? 'subtle' : 'outline')
-/**
- * TODO: ajouter un bouton avec un lien permettant de modifier la recette
- */
 </script>
 
 <template>

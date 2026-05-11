@@ -1,4 +1,7 @@
+import type { Filter } from "~/shared/models/Filter";
 import type { RecipeDto, RecipesResponse } from "~/shared/models/RecipeDTO";
+import { SortField } from "~/shared/models/SortField";
+import type { SortInfo } from "~/shared/models/SortInfo";
 import type { RecipeDocument } from "~~/server/models/Recipe";
 
 export const useRecipeStore = defineStore("recipe", () => {
@@ -12,6 +15,12 @@ export const useRecipeStore = defineStore("recipe", () => {
   const nextPage = ref<Number | null>(null);
   const isLoading = ref(false);
   const hasLoaded = ref(false);
+  const sortInfo = ref<SortInfo | undefined>();
+  const filters = ref<Filter>({
+    category: undefined,
+    onlyFavorite: false,
+    onlyDraft: false,
+  });
 
   const fetchRecipes = async () => {
     if (isLoading.value) {
@@ -23,6 +32,14 @@ export const useRecipeStore = defineStore("recipe", () => {
         method: "GET",
         query: {
           page: currentPage.value,
+          sort:
+            sortInfo.value !== undefined && sortInfo.value.type !== undefined
+              ? sortInfo.value.type.toString
+              : "",
+          dir: sortInfo.value !== undefined ? sortInfo.value.direction : "dsc",
+          c: filters.value.category !== undefined ? filters.value.category : "",
+          f: filters.value.onlyFavorite,
+          d: filters.value.onlyDraft,
         },
       });
 
@@ -89,6 +106,8 @@ export const useRecipeStore = defineStore("recipe", () => {
     prevPage: readonly(prevPage),
     limit,
     recipes: readonly(recipes),
+    sortInfo,
+    filters,
     fetchRecipes,
     fetchRandomPick,
     makeRecipeFavorite,

@@ -8,7 +8,6 @@ const props = defineProps<{
 const toast = useToast();
 const saveDraft = async () => {
     try {
-        console.log(props.recipe);
         if (props.recipe) {
             const recipe = props.recipe;
             recipe.isDraft = true;
@@ -16,11 +15,9 @@ const saveDraft = async () => {
                 method: 'POST',
                 body: recipe
             });
-            console.log(res);
             toast.add({ title: "Enregistré", description: "Brouillon enregistré avec succès.", color: "info", icon: "i-lucide-info" });
         }
     } catch (error) {
-        console.log(error);
         if (isNuxtError(error)) {
             toast.add({ title: "Erreur", description: error.message, color: "error", icon: "i-lucide-triangle-alert" });
         }
