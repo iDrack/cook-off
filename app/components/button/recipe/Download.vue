@@ -4,13 +4,13 @@ const props = defineProps<{
     variant: "ghost" | "outline",
 }>();
 
-const editRecipe = async () => {
+const downloadRecipe = async () => {
 
 }
 </script>
 
 <template>
-    <UButton icon="i-lucide-pen-line" @click="editRecipe()" color="neutral" :variant="props.variant" :square="true" />
+    <UButton icon="i-lucide-download" @click="downloadRecipe()" color="neutral" :variant="props.variant" :square="true" />
 </template>
 
 <style scoped></style>

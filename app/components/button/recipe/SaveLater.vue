@@ -16,6 +16,7 @@ const saveDraft = async () => {
         body: recipe
       });
       toast.add({ title: "Enregistré", description: "Brouillon enregistré avec succès.", color: "info", icon: "i-lucide-info" });
+      navigateTo("/recipes")
     }
   } catch (error) {
     if (isNuxtError(error)) {

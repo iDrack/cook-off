@@ -1,6 +1,9 @@
 <script setup lang='ts'>
 const recipeStore = useRecipeStore();
 await recipeStore.fetchRandomPick();
+const onDelete = async () => {
+  await recipeStore.fetchRandomPick();
+}
 </script>
 <template>
   <div>
@@ -13,7 +16,7 @@ await recipeStore.fetchRandomPick();
       }, {
         label: 'Créer une nouvelle recette',
         to: '/create-recipe',
-        icon: 'i-lucide-pen',
+        icon: 'i-lucide-pen-line',
         size: 'xl',
         color: 'neutral',
         variant: 'subtle'
@@ -29,12 +32,12 @@ await recipeStore.fetchRandomPick();
       </div>
       <div v-else-if="recipeStore.randomPick.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <CardRecipe v-for="(item, index) in recipeStore.randomPick" :key="index" :id="String(item._id)"
-          :title="item.title" :description="item.description" :category="item.category" :picture-path="item.picturePath"
-          :is-favorite="item.isFavorite" :show-delete="false" :show-edit="true" />
+          :title="item.title" :description="item.description" :category="item.category" :picture-path="item.picturePath" :is-draft="item.isDraft"
+          :is-favorite="item.isFavorite" :show-delete="false" :show-favorite="false" :show-edit="true" :on-delete="onDelete" />
       </div>
       <div v-else>
         <div class="flex justify-center">
-          <UButton label="Créer une nouvelle recette" to="/create-recipe" icon="i-lucide-pen" size="xl" color="neutral"
+          <UButton label="Créer une nouvelle recette" to="/create-recipe" icon="i-lucide-pen-line" size="xl" color="neutral"
             variant="subtle" />
         </div>
       </div>

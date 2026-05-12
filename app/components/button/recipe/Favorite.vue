@@ -7,17 +7,14 @@ const props = defineProps<{
   variant: 'ghost' | 'outline'
 }>();
 
-const emit = defineEmits<{
-  "onChange": [value: boolean],
-}>()
-
 const icon = computed(() => props.isFavorite ? "i-lucide-star" : "i-lucide-star-off")
 const color = computed(() => props.isFavorite ? "warning" : "neutral")
 const recipeStore = useRecipeStore();
+
+//Emit new isFavorite value
 const favoriteRecipe = async () => {
   try {
     const res = await recipeStore.makeRecipeFavorite(props.id);
-    emit("onChange", true);
   } catch (error) {
     console.log(error);
   }

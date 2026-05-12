@@ -3,6 +3,7 @@ import type { BreadcrumbItem } from '@nuxt/ui';
 import { Category } from '~/shared/models/Category';
 import { CategoryIcon } from '~/shared/models/CategoryIcon';
 import type { RecipeDto } from '~/shared/models/RecipeDTO';
+import { Unit } from '~/shared/models/Unit';
 
 const route = useRoute();
 const id = route.params.id
@@ -81,6 +82,7 @@ const onDefaultPeopleChange = (value: number) => {
       <ButtonSelectionNumberPeople :selected-number="nbPeople" @change="onDefaultPeopleChange" />
       <ButtonRecipeFavorite :id="String(recipe?._id)" :is-favorite="recipe?.isFavorite || false" variant="outline"
         @on-change="makeFavoriteCallback" />
+      <ButtonRecipeDownload :id="String(recipe?._id)" variant="outline"/>
       <ButtonRecipeEdit :id="String(recipe?._id)" variant="outline" />
       <ButtonRecipeDelete :id="String(recipe?._id)" :title="recipe?.title || ''" variant="outline"
         @on-delete="goBackCallBack" />
@@ -103,7 +105,7 @@ const onDefaultPeopleChange = (value: number) => {
           <h1 class="text-2xl font-semibold pb-4">Ingrédients</h1>
           <ul class="ml-2 text-lg space-y-2">
             <li v-for="ingredient in recipe?.ingredients">
-              {{ ingredient.quantity * delta }}{{ ingredient.unit }} de {{ ingredient.name }}.
+              {{ ingredient.quantity * delta }}{{ ingredient.unit === Unit.NONE ? '' :`${ingredient.unit} de` }} {{ ingredient.name }}.
             </li>
           </ul>
         </div>

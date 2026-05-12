@@ -4,20 +4,30 @@ import { CategoryIcon } from '~/shared/models/CategoryIcon';
 
 const isHover = ref(false)
 
+const emit = defineEmits<{
+  "onDelete": [value: boolean],
+}>()
+
 const props = defineProps<{
   id: string,
   title: string,
   description: string,
   category: Category,
   isFavorite: boolean,
+  isDraft: boolean,
   picturePath?: string,
   showDelete: boolean,
+  showFavorite: boolean,
   showEdit: boolean,
 }>();
 
 const categoryIcon = computed(() => CategoryIcon[props.category]);
 const page = computed(() => `/recipe/${props.id}`)
 const variant = computed(() => isHover.value ? 'subtle' : 'outline')
+
+const onDelete = () => {
+  emit("onDelete", true)
+}
 </script>
 
 <template>
@@ -49,17 +59,25 @@ const variant = computed(() => isHover.value ? 'subtle' : 'outline')
       </template>
     </NuxtLink>
     <template #footer>
-      <div class="flex justify-end gap-1">
-        <div>
-          <ButtonRecipeFavorite :id="props.id" :is-favorite="props.isFavorite" variant="ghost"/>
-        </div>
-        <div v-if="showEdit">
-          <ButtonRecipeEdit :id="props.id" variant="ghost"/>
-        </div>
-        <div v-if="showDelete">
-          <ButtonRecipeDelete :id="props.id" :title="props.title" variant="ghost"/>
+      <div class="flex justify-between">
+        <UButton icon="i-lucide-file-clock" color="info" variant="ghost" v-if="props.isDraft" />
+        <div v-else />
+        <div class="flex justify-end gap-1">
+          <div v-if="showFavorite">
+            <ButtonRecipeFavorite :id="props.id" :is-favorite="props.isFavorite" variant="ghost" />
+          </div>
+          <div>
+            <ButtonRecipeDownload :id="String(props.id)" variant="ghost" />
+          </div>
+          <div v-if="showEdit">
+            <ButtonRecipeEdit :id="props.id" variant="ghost" />
+          </div>
+          <div v-if="showDelete">
+            <ButtonRecipeDelete :id="props.id" :title="props.title" :on-delete="onDelete" variant="ghost" />
+          </div>
         </div>
       </div>
+
     </template>
   </UCard>
 

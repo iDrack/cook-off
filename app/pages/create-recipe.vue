@@ -136,7 +136,6 @@ const clearRecipe = (showMsg: boolean) => {
   if (showMsg) toast.add({ title: "Supprimé", description: "La recette a été remise à zéro.", color: "info", icon: "i-lucide-info" })
 }
 
-
 //Photo management
 const file = ref<File | null>(null)
 
@@ -159,7 +158,7 @@ const sendImage = async (file: File, id: string) => {
 </script>
 
 <template>  
-  <UPageSection>
+  <UContainer class="pt-12 space-y-10">
     <!--Title-->
     <div class="w-full">
       <h1 class="text-2xl font-semibold pb-2">Information sur le recette.</h1>
@@ -238,7 +237,7 @@ const sendImage = async (file: File, id: string) => {
     <div class="flex flex-1 justify-center">
       <UButton label="Enregistrer" icon="i-lucide-save" @click="sendRecipe" />
     </div>
-  </UPageSection>
+  </UContainer>
 </template>
 
 <style scoped></style>

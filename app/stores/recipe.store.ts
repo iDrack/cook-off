@@ -113,7 +113,7 @@ export const useRecipeStore = defineStore("recipe", () => {
   };
 
   return {
-    randomPick: readonly(randomPick),
+    randomPick,
     isLoading: readonly(isLoading),
     hasLoaded: readonly(hasLoaded),
     currentPage,
