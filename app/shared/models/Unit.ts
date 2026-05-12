@@ -7,5 +7,8 @@ export enum Unit {
   LITER = "L",
   TEASPOON = "cuillère à café",
   TABLESPOON = "cuillère à sucre",
+  PINCH = "pincée",
+  HANDFUL = "poignée",
+  CUP = "tasse",
   NONE = "Aucune unité",
 }

@@ -73,6 +73,21 @@ export const useRecipeStore = defineStore("recipe", () => {
     }
   };
 
+  const fetchRecipeById = async (id: string) => {
+    isLoading.value = true
+    try {
+      const res = await $fetch(`/api/recipes/${id}`, {
+        method: 'GET'
+      });
+
+      return res;
+    } catch (error) {
+      throw error
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const makeRecipeFavorite = async (id: string) => {
     try {
       const res = await $fetch(`/api/recipes/${id}/favorite`, {
@@ -113,6 +128,7 @@ export const useRecipeStore = defineStore("recipe", () => {
     searchQuery,
     fetchRecipes,
     fetchRandomPick,
+    fetchRecipeById,
     makeRecipeFavorite,
     deleteRecipe,
   };

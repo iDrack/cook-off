@@ -29,7 +29,7 @@ await recipeStore.fetchRandomPick();
       </div>
       <div v-else-if="recipeStore.randomPick.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <CardRecipe v-for="(item, index) in recipeStore.randomPick" :key="index" :id="String(item._id)"
-          :title="item.title" :description="item.description" :category="item.category" :photo-url="item.picturePath"
+          :title="item.title" :description="item.description" :category="item.category" :picture-path="item.picturePath"
           :is-favorite="item.isFavorite" :show-delete="false" :show-edit="true" />
       </div>
       <div v-else>

@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
       statusMessage: "Recette introuvable.",
     });
   }
-  recipe.isFavorite = !recipe.isFavorite;
-  recipe.save();
+  recipe.isFavorite = !recipe.isFavorite;  
+  await recipe.save();
   return recipe;
 });

@@ -99,14 +99,14 @@ watch(filters, async (newValue) => {
       </div>
     </div>
     <div>
-      <ButtonRecipeSearch/>
+      <ButtonRecipeSearch />
     </div>
   </UContainer>
   <UPage>
     <UContainer class="py-10">
       <UPageGrid>
         <CardRecipe v-for="(item, index) in recipeStore.recipes" :key="index" :id="item._id" :title="item.title"
-          :description="item.description" :category="item.category" :photo-url="item.picturePath"
+          :description="item.description" :category="item.category" :picture-path="item.picturePath"
           :is-favorite="item.isFavorite" :show-delete="true" :show-edit="true" />
       </UPageGrid>
     </UContainer>

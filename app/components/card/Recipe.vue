@@ -10,13 +10,13 @@ const props = defineProps<{
   description: string,
   category: Category,
   isFavorite: boolean,
-  photoUrl?: string,
+  picturePath?: string,
   showDelete: boolean,
   showEdit: boolean,
 }>();
 
 const categoryIcon = computed(() => CategoryIcon[props.category]);
-const page = computed(() => `/recipes/${props.id}`)
+const page = computed(() => `/recipe/${props.id}`)
 const variant = computed(() => isHover.value ? 'subtle' : 'outline')
 </script>
 
@@ -35,8 +35,8 @@ const variant = computed(() => isHover.value ? 'subtle' : 'outline')
             {{ props.description }}
           </p>
 
-          <div v-if="props.photoUrl && props.photoUrl !== ''" class="h-71 w-full overflow-hidden rounded-lg">
-            <img :src="photoUrl" class="h-full w-full object-cover" />
+          <div v-if="props.picturePath && props.picturePath !== ''" class="h-71 w-full overflow-hidden rounded-lg">
+            <img :src="picturePath" class="h-full w-full object-cover" />
           </div>
 
           <div v-else class="h-71 w-full rounded-lg bg-elevated flex items-center justify-center">
@@ -51,13 +51,13 @@ const variant = computed(() => isHover.value ? 'subtle' : 'outline')
     <template #footer>
       <div class="flex justify-end gap-1">
         <div>
-          <ButtonRecipeFavorite :id="props.id" :is-favorite="props.isFavorite" />
+          <ButtonRecipeFavorite :id="props.id" :is-favorite="props.isFavorite" variant="ghost"/>
         </div>
         <div v-if="showEdit">
-          <ButtonRecipeEdit :id="props.id" />
+          <ButtonRecipeEdit :id="props.id" variant="ghost"/>
         </div>
         <div v-if="showDelete">
-          <ButtonRecipeDelete :id="props.id" :title="props.title" />
+          <ButtonRecipeDelete :id="props.id" :title="props.title" variant="ghost"/>
         </div>
       </div>
     </template>

@@ -1,9 +1,14 @@
 <script setup lang='ts'>
 
-const props = defineProps({
+const props = defineProps<{
   id: String,
   title: String,
-});
+  variant: "ghost" | "outline",
+}>();
+
+const emit = defineEmits<{
+  "onDelete": [value: boolean],
+}>()
 
 const open = ref(false)
 
@@ -13,6 +18,7 @@ const deleteRecipe = async () => {
   const res = await recipeStore.deleteRecipe(String(props.id))
   open.value = false
   toast.add({ title: "Recette supprimée", description: `${res} a été supprimé.`, color: "error", icon: "i-lucide-triangle-alert" });
+  emit("onDelete", true);
 }
 
 </script>
@@ -24,7 +30,7 @@ const deleteRecipe = async () => {
     variant: 'ghost',
     icon: 'i-lucide-x'
   }">
-    <UButton icon="i-lucide-trash-2" color="error" variant="ghost" :square="true" />
+    <UButton icon="i-lucide-trash-2" color="error" :variant="props.variant" :square="true" />
 
     <template #body>
       <div>

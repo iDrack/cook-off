@@ -1,3 +1,4 @@
+import { RecipeDto } from "~/shared/models/RecipeDTO";
 import { Recipe } from "~~/server/models/Recipe";
 
 export default defineEventHandler(async (event) => {
@@ -10,8 +11,8 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const recipe = await Recipe.findById(id);
-
+  const recipe = await Recipe.findById(id).lean();
+  
   if (!recipe) {
     throw createError({
       statusCode: 404,
@@ -19,5 +20,9 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  return recipe;
+    const data: RecipeDto = {
+      ...recipe,
+      _id: recipe._id.toString(),
+    };
+    return data;
 });
