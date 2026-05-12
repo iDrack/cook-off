@@ -12,7 +12,7 @@ const recipeStore = useRecipeStore();
 const deleteRecipe = async () => {
   const res = await recipeStore.deleteRecipe(String(props.id))
   open.value = false
-  toast.add({ title: "Recette supprimée avec succès", description: `${res} a été supprimé.`, color: "error", icon: "i-lucide-triangle-alert" });
+  toast.add({ title: "Recette supprimée", description: `${res} a été supprimé.`, color: "error", icon: "i-lucide-triangle-alert" });
 }
 
 </script>
@@ -29,7 +29,7 @@ const deleteRecipe = async () => {
     <template #body>
       <div>
         <div>
-          Voulez vous vraiment supprimer "{{ props.title }}" ?
+          Voulez-vous vraiment supprimer "{{ props.title }}" ?
         </div>
         <div>
           Cette action est irreversible.

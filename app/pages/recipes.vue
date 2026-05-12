@@ -85,7 +85,7 @@ watch(filters, async (newValue) => {
 </script>
 
 <template>
-  <UContainer class="pt-3 z-40">
+  <UContainer class="flex justify-between pt-3 z-40">
     <div class="flex flex-wrap gap-3 items-center">
       <ButtonSelectionCategoryFilter :selected-category="filters.category" @change="onCategoryChange" />
       <ButtonSelectionSort :selected-sort="sortInfo" @change="onSortChange" />
@@ -97,6 +97,9 @@ watch(filters, async (newValue) => {
         <UIcon name="i-lucide-file-clock" />
         <USwitch v-model="filters.onlyDraft" />
       </div>
+    </div>
+    <div>
+      <ButtonRecipeSearch/>
     </div>
   </UContainer>
   <UPage>

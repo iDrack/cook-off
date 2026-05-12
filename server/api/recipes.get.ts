@@ -5,6 +5,10 @@ import type { SortOrder } from "mongoose";
 
 //TODO: Ajouter la recherche par texte
 
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 export default defineEventHandler(async (event): Promise<RecipesResponse> => {
   const query = getQuery(event);
 
@@ -34,12 +38,20 @@ export default defineEventHandler(async (event): Promise<RecipesResponse> => {
     typeof query.c === "string" && query.c.length > 0 ? query.c : null;
   const onlyFavorite = query.f === "true" || false;
   const onlyDraft = query.d === "true" || false;
+  const rawSearchQuery =
+    typeof query.s === "string" && query.s.trim() !== ""
+      ? query.s.trim()
+      : null;
+
+  const searchQuery = rawSearchQuery ? escapeRegex(rawSearchQuery) : null;
 
   const filters: Record<string, unknown> = {
     ...(category ? { category } : {}),
+    ...(searchQuery ? { title: { $regex: searchQuery, $options: "i" } } : {}),
     ...(onlyFavorite ? { isFavorite: true } : {}),
     ...(onlyDraft ? { isDraft: true } : {}),
   };
+
 
   //Number of pages
   const limit = 24;

@@ -21,6 +21,7 @@ export const useRecipeStore = defineStore("recipe", () => {
     onlyFavorite: false,
     onlyDraft: false,
   });
+  const searchQuery = ref("")
 
   const fetchRecipes = async () => {
     if (isLoading.value) {
@@ -32,6 +33,7 @@ export const useRecipeStore = defineStore("recipe", () => {
         method: "GET",
         query: {
           page: currentPage.value,
+          s: searchQuery.value,
           sort:
             sortInfo.value !== undefined && sortInfo.value.type !== undefined
               ? sortInfo.value.type.toString
@@ -108,6 +110,7 @@ export const useRecipeStore = defineStore("recipe", () => {
     recipes: readonly(recipes),
     sortInfo,
     filters,
+    searchQuery,
     fetchRecipes,
     fetchRandomPick,
     makeRecipeFavorite,
