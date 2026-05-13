@@ -1,11 +1,14 @@
 <script setup lang='ts'>
-import { boolean } from 'valibot';
 
 const props = defineProps<{
   id: string,
   isFavorite: boolean,
   variant: 'ghost' | 'outline'
 }>();
+
+const emit = defineEmits<{
+  change: [boolean],
+}>() 
 
 const icon = computed(() => props.isFavorite ? "i-lucide-star" : "i-lucide-star-off")
 const color = computed(() => props.isFavorite ? "warning" : "neutral")
@@ -15,6 +18,7 @@ const recipeStore = useRecipeStore();
 const favoriteRecipe = async () => {
   try {
     const res = await recipeStore.makeRecipeFavorite(props.id);
+    emit("change", true)
   } catch (error) {
     console.log(error);
   }

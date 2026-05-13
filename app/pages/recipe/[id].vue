@@ -81,7 +81,7 @@ const onDefaultPeopleChange = (value: number) => {
     <div class="flex flex-wrap gap-2 items-center">
       <ButtonSelectionNumberPeople :selected-number="nbPeople" @change="onDefaultPeopleChange" />
       <ButtonRecipeFavorite :id="String(recipe?._id)" :is-favorite="recipe?.isFavorite || false" variant="outline"
-        @on-change="makeFavoriteCallback" />
+        @change="makeFavoriteCallback" />
       <ButtonRecipeDownload :id="String(recipe?._id)" variant="outline"/>
       <ButtonRecipeEdit :id="String(recipe?._id)" variant="outline" />
       <ButtonRecipeDelete :id="String(recipe?._id)" :title="recipe?.title || ''" variant="outline"
