@@ -6,6 +6,7 @@ import type { RecipeDocument } from '~~/server/models/Recipe';
 import { useToast } from '@nuxt/ui/runtime/composables/useToast.js';
 
 const toast = useToast();
+const route = useRoute();
 
 const recipe = ref<RecipeCreatePayload>({
   title: '',
@@ -18,6 +19,19 @@ const recipe = ref<RecipeCreatePayload>({
   ingredients: [],
   steps: [],
 });
+
+const recipeId = computed(() => route.query.recipeId as string | undefined)
+const mode = computed(() => route.query.mode || "create")
+
+if(mode.value === "edit") {
+  if (recipeId.value !== "") {
+    const res = await $fetch(`/api/recipes/${recipeId.value}`, {
+      method: "GET"
+    });
+    console.log(res);
+    
+  }
+}
 
 // Ingredients
 const newIngredient = ref<{
