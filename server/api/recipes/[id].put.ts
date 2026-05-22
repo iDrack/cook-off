@@ -3,20 +3,12 @@ export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, "id");
     const newValues = await readBody(event);
 
-    if (!(await Recipe.findById(id))) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: "La recette n’existe pas.",
-      });
-    }
+    const recipe = await Recipe.findByIdAndUpdate(id, newValues, {
+      new: true,
+      runValidators: true
+    })
 
-    // May need to update each values
-    await Recipe.findByIdAndUpdate(id, newValues);
-    const recipeToUpdate = await Recipe.findById(id).lean();
-
-    console.log(recipeToUpdate);
-
-    return recipeToUpdate;
+    return recipe;
   } catch (error: any) {
     if (error?.statusCode) {
       throw error;

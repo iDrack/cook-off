@@ -1,5 +1,5 @@
-import { mkdir, writeFile } from "node:fs/promises";
-import { join, extname } from "node:path";
+import { mkdir, unlink, writeFile } from "node:fs/promises";
+import { join, extname, basename } from "node:path";
 import { Recipe } from "~~/server/models/Recipe";
 
 export default defineEventHandler(async (event) => {
@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   if (!id) {
     throw createError({
       statusCode: 400,
-      statusMessage: "L'id de recette est nécessaire pour modifier so image.",
+      statusMessage: "L'id de recette est nécessaire pour modifier son image.",
     });
   }
 
@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  if(!contentType?.startsWith('image/')) {
+  if (!contentType?.startsWith("image/")) {
     throw createError({
       statusCode: 400,
       statusMessage: "Le fichier doit être une image.",
@@ -31,11 +31,29 @@ export default defineEventHandler(async (event) => {
   }
 
   const data = await readRawBody(event, false);
-  if (!data || !(data instanceof Buffer) || data.length === 0 || !originalName) {
+  if (
+    !data ||
+    !(data instanceof Buffer) ||
+    data.length === 0 ||
+    !originalName
+  ) {
     throw createError({
       statusCode: 400,
       statusMessage: "Une image est requise.",
     });
+  }
+
+  if (recipe.picturePath) {
+    const filename = basename(recipe.picturePath);
+    const filePath = join(process.cwd(), "public", "img", "recipe", filename);
+
+    try {
+      await unlink(filePath);
+    } catch (error: any) {
+      if (error?.code !== "ENOENT") {
+        throw error;
+      }
+    }
   }
 
   const extension = extname(originalName).toLowerCase() || ".png";

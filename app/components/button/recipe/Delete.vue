@@ -3,7 +3,7 @@
 const props = defineProps<{
   id: String,
   title: String,
-  variant: "ghost" | "outline",
+  variant: "ghost" | "outline" | "subtle",
 }>();
 
 const emit = defineEmits<{

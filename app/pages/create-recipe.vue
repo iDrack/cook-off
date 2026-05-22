@@ -4,6 +4,7 @@ import { Unit } from '~/shared/models/Unit';
 import type { RecipeCreatePayload } from '~/shared/models/RecipeCreatePayload';
 import type { RecipeDocument } from '~~/server/models/Recipe';
 import { useToast } from '@nuxt/ui/runtime/composables/useToast.js';
+import type { RecipeDto } from '~/shared/models/RecipeDTO';
 
 const toast = useToast();
 const route = useRoute();
@@ -19,17 +20,36 @@ const recipe = ref<RecipeCreatePayload>({
   ingredients: [],
   steps: [],
 });
+const file = ref<File | null>(null);
 
-const recipeId = computed(() => route.query.recipeId as string | undefined)
-const mode = computed(() => route.query.mode || "create")
+const fileFromPicturePath = async (picturePath: string): Promise<File | null> => {
+  if (!picturePath) return null
 
-if(mode.value === "edit") {
+  const response = await fetch(picturePath)
+  if (!response.ok) return null
+
+  const blob = await response.blob()
+  const filename = picturePath.split('/').pop() ?? 'image'
+
+  return new File([blob], filename, {
+    type: blob.type || 'image/jpeg',
+    lastModified: Date.now(),
+  });
+}
+
+const recipeId = ref<string | undefined>(route.query.recipeId as string | undefined)
+const mode = ref<string>((route.query.mode as string) || 'create')
+
+
+if (mode.value === "edit") {
   if (recipeId.value !== "") {
-    const res = await $fetch(`/api/recipes/${recipeId.value}`, {
+    const res = await $fetch<RecipeDto>(`/api/recipes/${recipeId.value}`, {
       method: "GET"
     });
-    console.log(res);
-    
+    recipe.value = res;
+    if (res.picturePath) {
+      file.value = await fileFromPicturePath(res.picturePath);
+    }
   }
 }
 
@@ -55,7 +75,7 @@ const addNewIngredient = () => {
   if (newIngredient.value.name === "") {
     toast.add({ title: "Erreur", description: "Un ingrédient ne peut pas être vide.", color: "info", icon: "i-lucide-info" })
   } else if (newIngredient.value.quantity <= 0) {
-    toast.add({ title: "Erreur", description: "Un ingrédient doit avoir une quatité positif", color: "info", icon: "i-lucide-info" })
+    toast.add({ title: "Erreur", description: "Un ingrédient doit avoir une quantité positif", color: "info", icon: "i-lucide-info" })
   } else {
     recipe.value.ingredients.push(newIngredient.value);
     newIngredient.value = {
@@ -98,17 +118,36 @@ const sendRecipe = async () => {
       return
     }
 
-    const res = await $fetch<RecipeDocument>(`/api/recipes`, {
-      method: 'POST',
-      body: recipe.value
-    });
+    if (mode.value === 'edit') {
+      const res = await $fetch<RecipeDocument>(`/api/recipes/${recipeId.value}`, {
+        method: 'PUT',
+        body: recipe.value
+      });
 
-    if (res) {
-      toast.add({ title: "Recette enregistrée.", description: `La recette "${res.title}" a été enregistré avec succès.`, color: "success", icon: "i-lucide-check" });
-      if (file.value) {
-        const response = await sendImage(file.value, String(res._id))
+      if (res) {
+        toast.add({ title: "Recette mise à jour.", description: `La recette "${res.title}" a été modifiée avec succès.`, color: "success", icon: "i-lucide-check" });
+        if (file.value) {
+          await sendImage(file.value, String(res._id))
+        } else if (file.value === null) {
+          await $fetch(`/api/recipes/${res._id}/image`, {
+            method: 'DELETE'
+          });
+        }
       }
-      clearRecipe(false);
+    } else {
+      const res = await $fetch<RecipeDocument>(`/api/recipes`, {
+        method: 'POST',
+        body: recipe.value
+      });
+
+      if (res) {
+        toast.add({ title: "Recette enregistrée.", description: `La recette "${res.title}" a été enregistré avec succès.`, color: "success", icon: "i-lucide-check" });
+        if (file.value) {
+          await sendImage(file.value, String(res._id))
+        }
+        mode.value = "edit"
+        recipeId.value = String(res._id)
+      }
     }
   } catch (error) {
     if (isNuxtError(error)) {
@@ -151,8 +190,6 @@ const clearRecipe = (showMsg: boolean) => {
 }
 
 //Photo management
-const file = ref<File | null>(null)
-
 const sendImage = async (file: File, id: string) => {
   try {
     const res = await $fetch(`/api/recipes/${id}/image`, {
@@ -169,10 +206,15 @@ const sendImage = async (file: File, id: string) => {
     }
   }
 }
+
+const onDelete = () => {
+  clearRecipe(false);
+  navigateTo('/recipes')
+}
 </script>
 
-<template>  
-  <UContainer class="pt-12 space-y-10">
+<template>
+  <UContainer class="pt-12 pb-6 space-y-10">
     <!--Title-->
     <div class="w-full">
       <h1 class="text-2xl font-semibold pb-2">Information sur le recette.</h1>
@@ -185,7 +227,10 @@ const sendImage = async (file: File, id: string) => {
           </div>
           <div class="space-x-2">
             <ButtonRecipeSaveLater :recipe="recipe" />
-            <UButton icon="i-lucide-eraser" @click="clearRecipe(true)" color="error" variant="subtle" :square="true" />
+            <UButton icon="i-lucide-eraser" @click="clearRecipe(true)" color="neutral" variant="subtle"
+              :square="true" />
+            <ButtonRecipeDelete v-if="recipeId" :id="recipeId" :title="recipe.title" variant="subtle"
+              @on-delete="onDelete" />
           </div>
         </div>
       </div>
@@ -226,8 +271,8 @@ const sendImage = async (file: File, id: string) => {
       <!--Picture-->
       <div class="flex-1 min-w-0">
         <h1 class="text-2xl font-semibold pb-2">Photo</h1>
-        <UFileUpload :dropzone="true" v-model="file" label="Ajouter une photo à votre recette" 
-          accept="image/png,image/jpg,image/jpeg,image/webp" class="w-full min-h-48"/>
+        <UFileUpload :dropzone="true" v-model="file" label="Ajouter une photo à votre recette"
+          accept="image/png,image/jpg,image/jpeg,image/webp" class="w-full min-h-48" />
       </div>
     </div>
     <!--Steps-->
@@ -238,7 +283,7 @@ const sendImage = async (file: File, id: string) => {
           <div class="text-right tabular-nums">
             {{ index + 1 }}.
           </div>
-          <UTextarea v-model="recipe.steps[index]" class="w-full" :rows="1" />
+          <UTextarea v-model="recipe.steps[index]" class="w-full" />
         </li>
         <li>
           <UTextarea v-model="newStep" placeholder="Nouvelle étape" class="flex min-w-0" />

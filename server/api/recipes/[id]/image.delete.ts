@@ -8,13 +8,19 @@ export default defineEventHandler(async (event) => {
   if (!id) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Impossible de trouver la recetee, id manquant.",
+      statusMessage: "L'id de recette est nécessaire pour modifier son image.",
     });
   }
 
   const recipe = await Recipe.findById(id);
 
-  if (recipe && recipe.picturePath) {
+  if (!recipe) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: "Recette introuvable.",
+    });
+  }
+  if (recipe.picturePath) {
     const filename = basename(recipe.picturePath);
     const filePath = join(process.cwd(), "public", "img", "recipe", filename);
 
@@ -27,16 +33,6 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  await Recipe.deleteOne({
-    _id: id,
-  });
-
-  if (!recipe) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: "Recette inexistante.",
-    });
-  }
-
-  return { title: recipe.title };
+  recipe.picturePath = "";
+  return await recipe.save();
 });
