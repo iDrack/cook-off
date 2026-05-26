@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   if (!id) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Recipe id is required.",
+      statusMessage: "Id de recette invalide.",
     });
   }
 
@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
   if (!recipe) {
     throw createError({
       statusCode: 404,
-      statusMessage: "Recipe not found!",
+      statusMessage: `Aucune recette n’existe pour id: ${id}!`,
     });
   }
 

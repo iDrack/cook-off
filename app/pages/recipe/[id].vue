@@ -82,7 +82,7 @@ const onDefaultPeopleChange = (value: number) => {
       <ButtonSelectionNumberPeople :selected-number="nbPeople" @change="onDefaultPeopleChange" />
       <ButtonRecipeFavorite :id="String(recipe?._id)" :is-favorite="recipe?.isFavorite || false" variant="outline"
         @change="makeFavoriteCallback" />
-      <ButtonRecipeDownload :id="String(recipe?._id)" variant="outline"/>
+      <ButtonRecipeDownload :id="String(recipe?._id)" :title="recipe?.title || 'unknown'" variant="outline"/>
       <ButtonRecipeEdit :id="String(recipe?._id)" variant="outline" />
       <ButtonRecipeDelete :id="String(recipe?._id)" :title="recipe?.title || ''" variant="outline"
         @on-delete="goBackCallBack" />

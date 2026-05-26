@@ -67,7 +67,7 @@ const onDelete = () => {
             <ButtonRecipeFavorite :id="props.id" :is-favorite="props.isFavorite" variant="ghost" />
           </div>
           <div>
-            <ButtonRecipeDownload :id="String(props.id)" variant="ghost" />
+            <ButtonRecipeDownload :id="String(props.id)" :title="props.title" variant="ghost" />
           </div>
           <div v-if="showEdit">
             <ButtonRecipeEdit :id="props.id" variant="ghost" />

@@ -76,7 +76,7 @@ export const useRecipeStore = defineStore("recipe", () => {
   const fetchRecipeById = async (id: string) => {
     isLoading.value = true
     try {
-      const res = await $fetch(`/api/recipes/${id}`, {
+      const res = await $fetch<RecipeDto>(`/api/recipes/${id}`, {
         method: 'GET'
       });
 
