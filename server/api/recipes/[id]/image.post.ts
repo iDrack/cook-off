@@ -57,12 +57,12 @@ export default defineEventHandler(async (event) => {
   }
 
   const extension = extname(originalName).toLowerCase() || ".png";
-  const allowedExtensions = [".png", ".jpg", ".jpeg", ".webp"];
+  const allowedExtensions = [".png", ".jpg", ".jpeg"];
 
   if (!allowedExtensions.includes(extension)) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Format non supporté, utiliser png, jpg, jpeg ou webp.",
+      statusMessage: "Format non supporté, utiliser png, jpg ou jpeg.",
     });
   }
   const directory = join(process.cwd(), "public", "img", "recipe");

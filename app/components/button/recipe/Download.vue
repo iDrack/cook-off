@@ -29,7 +29,10 @@ const downloadRecipe = async () => {
 
     } catch (error) {
       if (isNuxtError(error)) {
-        toast.add({ title: "Erreur", description: error.message, color: "info", icon: "i-lucide-triangle-alert" });
+        toast.add({ title: "Erreur", description: error.message, color: "error", icon: "i-lucide-triangle-alert" });
+      } else {
+        toast.add({ title: "Erreur", description: "Réessayer plus tard, une erreur a survenu.", color: "error", icon: "i-lucide-triangle-alert" });
+
       }
       console.log(error);
     }
