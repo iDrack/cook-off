@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /app
 
 RUN corepack enable && corepack prepare pnpm@10.33.2 --activate
@@ -10,7 +10,7 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build
 
-FROM node:20-alpine AS production
+FROM node:24-alpine AS production
 WORKDIR /app
 
 RUN addgroup -g 1001 -S nodejs && adduser -S nodeuser -u 1001
