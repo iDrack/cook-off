@@ -1,64 +1,39 @@
-# Nuxt Starter Template
+# Cookoff
 
-[![Nuxt UI](https://img.shields.io/badge/Made%20with-Nuxt%20UI-00DC82?logo=nuxt&labelColor=020420)](https://ui.nuxt.com)
+Votre bibliothèque de recettes à self-host.
 
-Use this template to get started with [Nuxt UI](https://ui.nuxt.com) quickly.
+## Démarrage rapide
 
-- [Live demo](https://starter-template.nuxt.dev/)
-- [Documentation](https://ui.nuxt.com/docs/getting-started/installation/nuxt)
+1. Télécharger la dernière version de l'application dans la rubrique [Release](https://github.com/iDrack/cook-off/releases). L'archive contient une image Docker de l'application ainsi qu'un Docker Compose avec pour simplifier le lancement de l'application.
+2. Décompresser l'archive.
+3. Ajouter un fichier .env (un exemple est disponible plus loin).
+4. Lancer la commande `docker compose up -d`
+5. L'application sera disponible sur le port fourni dans le .env ou au port 3000 par défaut et un accès à la base de donnée Mongo sur le  port 8081.
 
-<a href="https://starter-template.nuxt.dev/" target="_blank">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://ui.nuxt.com/assets/templates/nuxt/starter-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="https://ui.nuxt.com/assets/templates/nuxt/starter-light.png">
-    <img alt="Nuxt Starter Template" src="https://ui.nuxt.com/assets/templates/nuxt/starter-light.png" width="830" height="466">
-  </picture>
-</a>
+Fichier .env d'exemple :
 
-> The starter template for Vue is on https://github.com/nuxt-ui-templates/starter-vue.
+```text
+PORT=3000
 
-## Quick Start
+MONGO_USER=
+MONGO_PASS=
+NUXT_MONGOOSE_URI=mongodb://[mongo_dbb]:[mongo_pass]@localhost:27017/cookoff?authSource=admin
 
-```bash [Terminal]
-npm create nuxt@latest -- -t ui
+ME_URL=mongodb://[mongo_dbb]:[mongo_pass]@mongo:27017/
+ME_USER=
+ME_PASS=
 ```
 
-## Deploy your own
+## Alternatives
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-name=starter&repository-url=https%3A%2F%2Fgithub.com%2Fnuxt-ui-templates%2Fstarter&demo-image=https%3A%2F%2Fui.nuxt.com%2Fassets%2Ftemplates%2Fnuxt%2Fstarter-dark.png&demo-url=https%3A%2F%2Fstarter-template.nuxt.dev%2F&demo-title=Nuxt%20Starter%20Template&demo-description=A%20minimal%20template%20to%20get%20started%20with%20Nuxt%20UI.)
+Vous pouvez télécharger le répertoire et build l'applications comme suit :
 
-## Setup
+Build l'application avec : `pnpm build`, le bundle sera disponilbe dans .output/server/index.mjs. Vous pourrez lancer l'application avec `node .output/server/index.mjs`.
 
-Make sure to install the dependencies:
+Le bundle st aussi disponible dans les releases.
 
-```bash
-pnpm install
-```
+## Dépendences
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-pnpm dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-pnpm build
-```
-
-Locally preview production build:
-
-```bash
-pnpm preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
-
-## Renovate integration
-
-Install [Renovate GitHub app](https://github.com/apps/renovate/installations/select_target) on your repository and you are good to go.
+[Nuxt](https://nuxt.com)
+[NuxtUI](https://ui.nuxt.com)
+[Mongo](https://www.mongodb.com) & [MongoExpress](https://github.com/mongo-express/mongo-express)

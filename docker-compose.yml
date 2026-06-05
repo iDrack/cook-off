@@ -23,7 +23,37 @@ services:
       ME_CONFIG_BASICAUTH_ENABLED: true
       ME_CONFIG_BASICAUTH_USERNAME: ${ME_USER}
       ME_CONFIG_BASICAUTH_PASSWORD: ${ME_PASS}
+  app:
+    build:
+      context: .
+      args:
+        PORT: ${PORT:-3000}
+    image: cookoff:latest
+    container_name: cookoff-app
+    restart: unless-stopped
+    ports:
+      - "${PORT}:3000"
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: ${PORT}
+      MONGO_USER: ${MONGO_USER}
+      MONGO_PASS: ${MONGO_PASS}
+      MONGO_DB: cookoff
+      MONGO_URI: mongodb://${MONGO_USER}:${MONGO_PASS}@mongo:27017/cookoff?authSource=admin
+    volumes:
+      - uploads_data:/app/public
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   mongo_data:
+    driver: local
+  uploads_data:
     driver: local
