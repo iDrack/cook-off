@@ -14,7 +14,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   routeRules: {
-    '/': { prerender: true }
+    '/': { prerender: Boolean(process.env.NUXT_MONGOOSE_URI) }
   },
 
   compatibilityDate: '2025-01-15',
