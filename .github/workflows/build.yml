@@ -29,6 +29,10 @@ jobs:
               run: |
                 cp -r docker/ production-deploy 2>/dev/null || true
 
+            - name: Copy Docker Compose
+              run: |
+                cp docker-compose.yml production-deploy
+
             - name: Upload production image
               uses: actions/upload-artifact@v4
               with:
