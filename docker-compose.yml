@@ -1,4 +1,4 @@
-name: cook-off-test
+name: cook-off-prod
 
 services:
   mongo:
@@ -24,10 +24,6 @@ services:
       ME_CONFIG_BASICAUTH_USERNAME: ${ME_USER}
       ME_CONFIG_BASICAUTH_PASSWORD: ${ME_PASS}
   app:
-    build:
-      context: .
-      args:
-        PORT: ${PORT:-3000}
     image: cookoff:latest
     container_name: cookoff-app
     restart: unless-stopped
@@ -42,7 +38,7 @@ services:
       MONGO_DB: cookoff
       MONGO_URI: mongodb://${MONGO_USER}:${MONGO_PASS}@mongo:27017/cookoff?authSource=admin
     volumes:
-      - uploads_data:/app/public
+      - uploads_data:/app/public/img/recipe
     depends_on:
       - mongo
     networks:

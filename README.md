@@ -7,8 +7,14 @@ Votre bibliothèque de recettes à self-host.
 1. Télécharger la dernière version de l'application dans la rubrique [Release](https://github.com/iDrack/cook-off/releases). L'archive contient une image Docker de l'application ainsi qu'un Docker Compose avec pour simplifier le lancement de l'application.
 2. Décompresser l'archive.
 3. Ajouter un fichier .env (un exemple est disponible plus loin).
-4. Lancer la commande `docker compose up -d`
-5. L'application sera disponible sur le port fourni dans le .env ou au port 3000 par défaut et un accès à la base de donnée Mongo sur le  port 8081.
+4. Lancer la commande ou éxécuter le script de déploiement
+
+```bash
+docker load
+docker compose up -d
+```
+
+L'application sera disponible sur le port fourni dans le .env ou au port 3000 par défaut et un accès à la base de donnée Mongo sur le  port 8081.
 
 Fichier .env d'exemple :
 
