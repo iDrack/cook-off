@@ -36,7 +36,7 @@ services:
       MONGO_USER: ${MONGO_USER}
       MONGO_PASS: ${MONGO_PASS}
       MONGO_DB: cookoff
-      NUXT_MONGO_URI: mongodb://${MONGO_USER}:${MONGO_PASS}@mongo:27017/cookoff?authSource=admin
+      NUXT_MONGOOSE_URI: mongodb://${MONGO_USER}:${MONGO_PASS}@mongo:27017/cookoff?authSource=admin
     volumes:
       - uploads_data:/app/public/img/recipe
     depends_on:
