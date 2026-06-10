@@ -128,8 +128,12 @@ const onDefaultPeopleChange = (value: number) => {
       <div class="flex justify-center">
         <div>
           <h1 class="text-3xl font-semibold text-success pb-6 text-center">Bon Appétit !</h1>
-          <img v-if="recipe?.picturePath" :src="recipe?.picturePath"
-            class="h-100 w-150 overflow-hidden rounded-lg object-cover" />
+          <img
+            v-if="recipe?._id"
+            :src="'/api/recipes/' + recipe._id + '/image'"
+            class="h-100 w-150 overflow-hidden rounded-lg object-cover"
+            alt="Image de la recette"
+          />
         </div>
       </div>
 

@@ -43,7 +43,7 @@ services:
       MONGO_DB: cookoff
       NUXT_MONGOOSE_URI: mongodb://${MONGO_USER}:${MONGO_PASS}@mongo:27017/cookoff?authSource=admin
     volumes:
-      - uploads_data:/app/public/img/recipe
+      - uploads_data:/app/bucket/recipes
     depends_on:
       - mongo
     networks:

@@ -45,7 +45,8 @@ export default defineEventHandler(async (event) => {
 
   if (recipe.picturePath) {
     const filename = basename(recipe.picturePath);
-    const filePath = join(process.cwd(), "public", "img", "recipe", filename);
+    const IMAGE_DIR = join(process.cwd(), "bucket", "recipes");
+    const filePath = join(IMAGE_DIR, filename);
 
     try {
       await unlink(filePath);
@@ -72,7 +73,7 @@ export default defineEventHandler(async (event) => {
 
   await writeFile(join(directory, filename), data);
 
-  recipe.picturePath = `/img/recipe/${filename}`;
+  recipe.picturePath = `bucket/recipes/${filename}`;
   await recipe.save();
 
   return {

@@ -1,3 +1,4 @@
+import { basename, join } from "node:path";
 import PDFDocument from "pdfkit";
 import { Unit } from "~/shared/models/Unit";
 import { Recipe } from "~~/server/models/Recipe";
@@ -79,7 +80,13 @@ const recipeToPdfBuffer = (recipe: {
           doc.page.width - doc.page.margins.left - doc.page.margins.right;
         const x = doc.page.margins.left + (printableWidth - imageWidth) / 2;
         const y = doc.y;
-        doc.image(`public/${recipe.picturePath}`, x, y, { width: 300 });
+        const imagePath = join(
+          process.cwd(),
+          "bucket",
+          "recipes",
+          basename(recipe.picturePath),
+        );
+        doc.image(imagePath, x, y, { width: 300 });
       }
       doc.end();
     });

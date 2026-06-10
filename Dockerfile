@@ -16,7 +16,7 @@ WORKDIR /app
 RUN addgroup -g 1001 -S nodejs && adduser -S nodeuser -u 1001
 
 COPY --from=builder --chown=nodeuser:nodejs /app/.output ./.output
-RUN mkdir -p /app/public/img/recipe && chown -R nodeuser:nodejs /app/public
+RUN mkdir -p /app/bucket/recipes && chown -R nodeuser:nodejs /app/bucket
 
 USER nodeuser
 
