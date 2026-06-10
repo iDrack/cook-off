@@ -46,7 +46,7 @@ const onDelete = () => {
           </p>
 
           <div v-if="props.picturePath && props.picturePath !== ''" class="h-71 w-full overflow-hidden rounded-lg">
-            <img :src="picturePath" class="h-full w-full object-cover" />
+            <img :src="`/api/recipes/${props.id}/image`" class="h-full w-full object-cover" />
           </div>
 
           <div v-else class="h-71 w-full rounded-lg bg-elevated flex items-center justify-center">

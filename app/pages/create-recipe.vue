@@ -21,6 +21,31 @@ const recipe = ref<RecipeCreatePayload>({
   steps: [],
 });
 const file = ref<File | null>(null);
+const hasExistingImage = ref(false);
+const imageDirty = ref(false);
+const hydratingImage = ref(false);
+
+watch(file, () => {
+  if (!hydratingImage.value) {
+    imageDirty.value = true;
+  }
+});
+
+const fileFromRecipeId = async (id: string): Promise<File | null> => {
+  const response = await fetch(`/api/recipes/${id}/image`);
+  if (!response.ok) return null;
+
+  const blob = await response.blob();
+  const contentType = response.headers.get("content-type") || blob.type || "image/jpeg";
+  const extension =
+    contentType.includes("png") ? "png" :
+    contentType.includes("webp") ? "webp" : "jpg";
+
+  return new File([blob], `recipe-${id}.${extension}`, {
+    type: contentType,
+    lastModified: Date.now()
+  });
+};
 
 const fileFromPicturePath = async (picturePath: string): Promise<File | null> => {
   if (!picturePath) return null
@@ -41,15 +66,15 @@ const recipeId = ref<string | undefined>(route.query.recipeId as string | undefi
 const mode = ref<string>((route.query.mode as string) || 'create')
 
 
-if (mode.value === "edit") {
-  if (recipeId.value !== "") {
-    const res = await $fetch<RecipeDto>(`/api/recipes/${recipeId.value}`, {
-      method: "GET"
-    });
-    recipe.value = res;
-    if (res.picturePath) {
-      file.value = await fileFromPicturePath(res.picturePath);
-    }
+if (mode.value === "edit" && recipeId.value) {
+  const res = await $fetch<RecipeDto>(`/api/recipes/${recipeId.value}`, { method: "GET" });
+  recipe.value = res;
+  hasExistingImage.value = Boolean(res.picturePath);
+
+  if (hasExistingImage.value) {
+    hydratingImage.value = true;
+    file.value = await fileFromRecipeId(recipeId.value);
+    hydratingImage.value = false;
   }
 }
 
@@ -126,12 +151,15 @@ const sendRecipe = async () => {
 
       if (res) {
         toast.add({ title: "Recette mise à jour.", description: `La recette "${res.title}" a été modifiée avec succès.`, color: "success", icon: "i-lucide-check" });
-        if (file.value) {
-          await sendImage(file.value, String(res._id))
-        } else if (file.value === null) {
-          await $fetch(`/api/recipes/${res._id}/image`, {
-            method: 'DELETE'
-          });
+        if (imageDirty.value) {
+          if (file.value) {
+            await sendImage(file.value, String(res._id));
+            hasExistingImage.value = true;
+          } else if (hasExistingImage.value) {
+            await $fetch(`/api/recipes/${res._id}/image`, { method: "DELETE" });
+            hasExistingImage.value = false;
+          }
+          imageDirty.value = false;
         }
       }
     } else {
