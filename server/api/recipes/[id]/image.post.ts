@@ -66,7 +66,7 @@ export default defineEventHandler(async (event) => {
       statusMessage: "Format non supporté, utiliser png, jpg ou jpeg.",
     });
   }
-  const directory = join(process.cwd(), "public", "img", "recipe");
+  const directory = join(process.cwd(), "bucket", "recipes");
   await mkdir(directory, { recursive: true });
 
   const filename = `${id}${extension}`;
