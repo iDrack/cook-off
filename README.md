@@ -36,7 +36,16 @@ Vous pouvez télécharger le répertoire et build l'applications comme suit :
 
 Build l'application avec : `pnpm build`, le bundle sera disponilbe dans .output/server/index.mjs. Vous pourrez lancer l'application avec `node .output/server/index.mjs`.
 
-Le bundle st aussi disponible dans les releases.
+Le bundle est aussi disponible dans les releases.
+
+## Mise à jour
+
+Si vous choississez d'utiliser le docker compose fournit avec l'application, vous pouvez juste télécharger l'image docker de l'app pour mettre à jour l'application et éxécuter ces commandes:
+
+```bash
+docker load -i cookoff-image.tar
+docker compose up -d --force-recreate
+```
 
 ## Dépendences
 
