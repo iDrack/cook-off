@@ -74,9 +74,12 @@ const ingredientItems = computed(() =>
 const addNewIngredient = () => {
   if (newIngredient.value.name === "") {
     toast.add({ title: "Erreur", description: "Un ingrédient ne peut pas être vide.", color: "info", icon: "i-lucide-info" })
-  } else if (newIngredient.value.quantity <= 0) {
+  } else if (newIngredient.value.quantity < 0) {
     toast.add({ title: "Erreur", description: "Un ingrédient doit avoir une quantité positif", color: "info", icon: "i-lucide-info" })
   } else {
+    if(newIngredient.value.quantity === 0) {
+      newIngredient.value.unit = Unit.NONE;
+    }
     recipe.value.ingredients.push(newIngredient.value);
     newIngredient.value = {
       name: "",

@@ -105,7 +105,12 @@ const onDefaultPeopleChange = (value: number) => {
           <h1 class="text-2xl font-semibold pb-4">Ingrédients</h1>
           <ul class="ml-2 text-lg space-y-2">
             <li v-for="ingredient in recipe?.ingredients">
+              <span v-if="ingredient.quantity === 0 && ingredient.unit === Unit.NONE">
+              {{ formatStringToTitle(ingredient.name) }}.
+              </span>
+              <span v-else>
               {{ ingredient.quantity * delta }}{{ ingredient.unit === Unit.NONE ? '' :`${ingredient.unit} de` }} {{ ingredient.name }}.
+              </span>
             </li>
           </ul>
         </div>
