@@ -26,3 +26,5 @@ logs
 # Local data
 public/img
 public/img/*
+bucket
+bucket/*
