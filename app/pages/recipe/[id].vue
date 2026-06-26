@@ -82,7 +82,7 @@ const onDefaultPeopleChange = (value: number) => {
       <ButtonSelectionNumberPeople :selected-number="nbPeople" @change="onDefaultPeopleChange" />
       <ButtonRecipeFavorite :id="String(recipe?._id)" :is-favorite="recipe?.isFavorite || false" variant="outline"
         @change="makeFavoriteCallback" />
-      <ButtonRecipeDownload :id="String(recipe?._id)" :title="recipe?.title || 'unknown'" variant="outline"/>
+      <ButtonRecipeDownload :id="String(recipe?._id)" :title="recipe?.title || 'unknown'" variant="outline" />
       <ButtonRecipeEdit :id="String(recipe?._id)" variant="outline" />
       <ButtonRecipeDelete :id="String(recipe?._id)" :title="recipe?.title || ''" variant="outline"
         @on-delete="goBackCallBack" />
@@ -106,10 +106,15 @@ const onDefaultPeopleChange = (value: number) => {
           <ul class="ml-2 text-lg space-y-2">
             <li v-for="ingredient in recipe?.ingredients">
               <span v-if="ingredient.quantity === 0 && ingredient.unit === Unit.NONE">
-              {{ formatStringToTitle(ingredient.name) }}.
+                {{ formatStringToTitle(ingredient.name) }}.
+              </span>
+              <span
+                v-else-if="ingredient.unit === Unit.CUP || ingredient.unit === Unit.HANDFUL || ingredient.unit === Unit.PINCH || ingredient.unit === Unit.TABLESPOON || ingredient.unit === Unit.TEASPOON || ingredient.unit === Unit.CAN">
+                {{ ingredient.quantity * delta }} {{ `${ingredient.unit} de` }} {{ ingredient.name }}.
               </span>
               <span v-else>
-              {{ ingredient.quantity * delta }}{{ ingredient.unit === Unit.NONE ? '' :`${ingredient.unit} de` }} {{ ingredient.name }}.
+                {{ ingredient.quantity * delta }}{{ ingredient.unit === Unit.NONE ? '' : `${ingredient.unit} de` }} {{
+                  ingredient.name }}.
               </span>
             </li>
           </ul>
@@ -133,12 +138,8 @@ const onDefaultPeopleChange = (value: number) => {
       <div class="flex justify-center">
         <div>
           <h1 class="text-3xl font-semibold text-success pb-6 text-center">Bon Appétit !</h1>
-          <img
-            v-if="recipe?._id"
-            :src="'/api/recipes/' + recipe._id + '/image'"
-            class="h-100 w-150 overflow-hidden rounded-lg object-cover"
-            alt="Image de la recette"
-          />
+          <img v-if="recipe?._id" :src="'/api/recipes/' + recipe._id + '/image'"
+            class="h-100 w-150 overflow-hidden rounded-lg object-cover" alt="Image de la recette" />
         </div>
       </div>
 
