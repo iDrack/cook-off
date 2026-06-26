@@ -110,11 +110,10 @@ const onDefaultPeopleChange = (value: number) => {
               </span>
               <span
                 v-else-if="ingredient.unit === Unit.CUP || ingredient.unit === Unit.HANDFUL || ingredient.unit === Unit.PINCH || ingredient.unit === Unit.TABLESPOON || ingredient.unit === Unit.TEASPOON || ingredient.unit === Unit.CAN">
-                {{ ingredient.quantity * delta }} {{ `${ingredient.unit} de` }} {{ ingredient.name }}.
+                {{ ingredient.name }} : {{ ingredient.quantity * delta }} {{ ingredient.unit }}.
               </span>
               <span v-else>
-                {{ ingredient.quantity * delta }}{{ ingredient.unit === Unit.NONE ? '' : `${ingredient.unit} de` }} {{
-                  ingredient.name }}.
+                {{ ingredient.name }} : {{ ingredient.quantity * delta }}{{ ingredient.unit === Unit.NONE ? '' : ingredient.unit }}.
               </span>
             </li>
           </ul>
