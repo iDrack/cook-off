@@ -69,9 +69,9 @@ const recipeToPdfBuffer = (recipe: {
           i.unit === Unit.CAN ||
           i.unit === Unit.PINCH
         ) {
-          doc.text(`- ${i.quantity} ${unitLabel} de ${i.name}`);
+          doc.text(`- ${i.name}: ${i.quantity} ${unitLabel}`);
         } else {
-          doc.text(`- ${i.quantity}${unitLabel} ${i.name}`);
+          doc.text(`- ${i.name}: ${i.quantity}${unitLabel}`);
         }
       });
       doc.moveDown();
