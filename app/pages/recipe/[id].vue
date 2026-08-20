@@ -10,6 +10,7 @@ const id = route.params.id
 const toast = useToast();
 const nbPeople = ref(1);
 const delta = ref(1);
+const canShowImage = ref(true);
 const { data: recipe, error } = await useFetch<RecipeDto>(`/api/recipes/${id}`);
 
 if (error.value) {
@@ -71,6 +72,14 @@ const onDefaultPeopleChange = (value: number) => {
   }
 }
 
+const imageUrl = computed(() => {
+  if (!recipe.value?._id || !recipe.value?.picturePath) return null
+  return `/api/recipes/${recipe.value._id}/image`
+})
+
+watch(imageUrl, () => {
+  canShowImage.value = true
+})
 </script>
 
 <template>
@@ -110,10 +119,10 @@ const onDefaultPeopleChange = (value: number) => {
               </span>
               <span
                 v-else-if="ingredient.unit === Unit.CUP || ingredient.unit === Unit.HANDFUL || ingredient.unit === Unit.PINCH || ingredient.unit === Unit.TABLESPOON || ingredient.unit === Unit.TEASPOON || ingredient.unit === Unit.CAN">
-                {{ ingredient.name }} : {{ ingredient.quantity * delta }} {{ ingredient.unit }}.
+                {{ ingredient.name }}: {{ ingredient.quantity * delta }} {{ ingredient.unit }}.
               </span>
               <span v-else>
-                {{ ingredient.name }} : {{ ingredient.quantity * delta }}{{ ingredient.unit === Unit.NONE ? '' : ingredient.unit }}.
+                {{ ingredient.name }}: {{ ingredient.quantity * delta }}{{ ingredient.unit === Unit.NONE ? '' : ingredient.unit }}.
               </span>
             </li>
           </ul>
@@ -137,8 +146,9 @@ const onDefaultPeopleChange = (value: number) => {
       <div class="flex justify-center">
         <div>
           <h1 class="text-3xl font-semibold text-success pb-6 text-center">Bon Appétit !</h1>
-          <img v-if="recipe?._id" :src="'/api/recipes/' + recipe._id + '/image'"
-            class="h-100 w-150 overflow-hidden rounded-lg object-cover" alt="Image de la recette" />
+          <img v-if="imageUrl && canShowImage" :src="imageUrl"
+            class="h-100 w-150 overflow-hidden rounded-lg object-cover" 
+            @error.once="canShowImage = false"/>
         </div>
       </div>
 
