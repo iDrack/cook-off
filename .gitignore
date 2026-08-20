@@ -28,4 +28,6 @@ public/img
 public/img/*
 bucket
 bucket/*
+.vscode/
+.vscode/*
 .vscode/settings.json
