@@ -57,13 +57,18 @@ const recipeToPdfBuffer = (recipe: {
       doc.fontSize(12);
       recipe.ingredients.forEach((i) => {
         const unitLabel = i.unit === Unit.NONE ? "" : `${i.unit}`;
-        if (Unit.NONE) {
+        if (i.unit === Unit.NONE) {
           if (i.quantity === 0) {
-          doc.text(`- $${i.name}`);
+            doc.text(`- ${i.name}`);
           } else {
-          doc.text(`- ${i.quantity} ${i.name}`);
+            doc.text(`- ${i.quantity} ${i.name}`);
           }
-        } else if (Unit.TEASPOON || Unit.TABLESPOON || Unit.CAN || Unit.PINCH ) {
+        } else if (
+          i.unit === Unit.TEASPOON ||
+          i.unit === Unit.TABLESPOON ||
+          i.unit === Unit.CAN ||
+          i.unit === Unit.PINCH
+        ) {
           doc.text(`- ${i.quantity} ${unitLabel} de ${i.name}`);
         } else {
           doc.text(`- ${i.quantity}${unitLabel} ${i.name}`);
