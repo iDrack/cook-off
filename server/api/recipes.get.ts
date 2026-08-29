@@ -3,7 +3,6 @@ import { RecipeDto, RecipesResponse } from "~/shared/models/RecipeDTO";
 import { Recipe } from "../models/Recipe";
 import type { SortOrder } from "mongoose";
 
-//TODO: Ajouter la recherche par texte
 
 function escapeRegex(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
