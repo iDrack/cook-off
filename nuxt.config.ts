@@ -4,7 +4,8 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/ui',
     '@pinia/nuxt',
-    'nuxt-mongoose'
+    'nuxt-mongoose',
+    '@nuxt/test-utils/module',
   ],
 
   devtools: {
