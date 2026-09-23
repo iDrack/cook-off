@@ -1,8 +1,9 @@
 import type { Filter } from "~/shared/models/Filter";
 import type { RecipeDto, RecipesResponse } from "~/shared/models/RecipeDTO";
-import { SortField } from "~/shared/models/SortField";
 import type { SortInfo } from "~/shared/models/SortInfo";
 import type { RecipeDocument } from "~~/server/models/Recipe";
+import { defineStore } from "pinia";
+import { ref, readonly } from "vue";
 
 export const useRecipeStore = defineStore("recipe", () => {
   const recipes = ref<RecipeDto[]>([]);
