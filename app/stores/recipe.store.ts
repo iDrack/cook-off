@@ -107,7 +107,7 @@ export const useRecipeStore = defineStore("recipe", () => {
         method: "DELETE",
       });
       await fetchRecipes();
-      return res.title;
+      return res;
     } catch (error) {
       throw error;
     }
