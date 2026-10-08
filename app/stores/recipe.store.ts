@@ -37,7 +37,7 @@ export const useRecipeStore = defineStore("recipe", () => {
           s: searchQuery.value,
           sort:
             sortInfo.value !== undefined && sortInfo.value.type !== undefined
-              ? sortInfo.value.type.toString
+              ? sortInfo.value.type.toString()
               : "",
           dir: sortInfo.value !== undefined ? sortInfo.value.direction : "dsc",
           c: filters.value.category !== undefined ? filters.value.category : "",

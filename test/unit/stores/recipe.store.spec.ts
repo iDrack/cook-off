@@ -1,30 +1,210 @@
 import {beforeEach, describe, expect, it, vi} from "vitest";
 import {createPinia, setActivePinia} from "pinia";
 import {useRecipeStore} from "../../../app/stores/recipe.store";
+import {Category} from "../../../app/shared/models/Category";
+import {SortField} from "../../../app/shared/models/SortField";
+import {init} from "vitest/worker";
+
+const recipes = [{
+  _id: "recipe-1",
+  title: 'Tarte aux pommes',
+  isFavorite: false
+}, {
+  _id: "recipe-2",
+  title: 'Cookies',
+  isFavorite: false
+}, {
+  _id: "recipe-3",
+  title: 'Ratatouille',
+  isFavorite: false
+}, {
+  _id: "recipe-4",
+  title: 'Quiche Lorraine',
+  isFavorite: false
+}]
+
+describe("useRecipeStore - fetchRecipes", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    vi.restoreAllMocks()
+  })
+  /**
+   * ignore un second appel lorsque isLoading vaut déjà true.
+   */
+
+  it('devrait appeler GET /api/recipes avec la page, la recherche, la catégorie, les filtres et le tri', async () => {
+    const recipesResponse = {
+      metadata: {
+        page: 2,
+        totalPages: 3,
+        limit: 24,
+        totalItems: 60,
+        prevPage: 1,
+        nextPage: 3
+      },
+      data: []
+    }
+
+    const fetchMock = vi.fn().mockResolvedValueOnce(recipesResponse)
+    vi.stubGlobal('$fetch', fetchMock)
+
+    const store = useRecipeStore()
+    store.currentPage = 2
+    store.searchQuery = 'tarte'
+    store.filters = {
+      category: Category.DESSERT,
+      onlyFavorite: true,
+      onlyDraft: true
+    }
+    store.sortInfo = {type: SortField.updatedDate, direction: 'asc'}
+
+    await store.fetchRecipes()
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(fetchMock).toHaveBeenCalledWith('/api/recipes', {
+      method: 'GET',
+      query: {
+        page: 2,
+        s: 'tarte',
+        sort: SortField.updatedDate,
+        dir: 'asc',
+        c: Category.DESSERT,
+        f: true,
+        d: true
+      }
+    })
+  })
+
+  it('devrait mettre à jour recipes avec les nouvelles données après être appelé', async () => {
+    const recipesResponse = {
+      metadata: {
+        page: 1,
+        totalPages: 1,
+        limit: 24,
+        totalItems: 4,
+        prevPage: null,
+        nextPage: null
+      },
+      data: recipes
+    }
+
+    const fetchMock = vi.fn().mockResolvedValueOnce(recipesResponse)
+    vi.stubGlobal('$fetch', fetchMock)
+
+    const store = useRecipeStore()
+
+    const initialRecipes = store.recipes;
+
+    await store.fetchRecipes()
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(fetchMock).toHaveBeenCalledWith('/api/recipes', {
+      method: 'GET',
+      query: {
+        page: 1,
+        s: '',
+        sort: '',
+        dir: 'dsc',
+        c: '',
+        f: false,
+        d: false
+      }
+    })
+    expect(store.recipes).toEqual(recipes)
+    expect(initialRecipes).not.toEqual(recipes)
+  });
+
+  it('devrait remettre isLoading a false après un appel', async () => {
+    const fetchMock = vi.fn().mockResolvedValueOnce(
+      {
+        metadata: {
+          page: 1,
+          totalPages: 1,
+          limit: 24,
+          totalItems: 4,
+          prevPage: null,
+          nextPage: null
+        },
+        data: recipes
+      }
+    )
+    vi.stubGlobal('$fetch', fetchMock)
+
+    const store = useRecipeStore()
+    await store.fetchRecipes()
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(fetchMock).toHaveBeenCalledWith('/api/recipes', {
+      method: 'GET',
+      query: {
+        page: 1,
+        s: '',
+        sort: '',
+        dir: 'dsc',
+        c: '',
+        f: false,
+        d: false
+      }
+    })
+    expect(store.isLoading).toEqual(false)
+  });
+
+  it("devrait propager l'erreur en cas d'échec", async () => {
+    vi.stubGlobal('$fetch', vi.fn().mockRejectedValueOnce(new Error('Erreur serveur')))
+
+    const store = useRecipeStore()
+    await expect(store.fetchRecipes()).rejects.toThrow('Erreur serveur')
+    expect(store.isLoading).toBe(false)
+  });
+
+  it('devrait ignorer un second appel de fetchRecipes tant que le premier est en cours', async () => {
+    const recipesResponse = {
+      metadata: {
+        page: 1,
+        totalPages: 1,
+        limit: 24,
+        totalItems: 1,
+        prevPage: null,
+        nextPage: null
+      },
+      data: [{_id: 'recipe-1', title: 'Tarte aux pommes'}]
+    }
+
+    // Promesse gérer manuellement
+    let resolveFetch!: (value: typeof recipesResponse) => void
+    const pending = new Promise<typeof recipesResponse>((resolve) => {
+      resolveFetch = resolve
+    })
+
+    const fetchMock = vi.fn().mockReturnValueOnce(pending)
+    vi.stubGlobal('$fetch', fetchMock)
+
+    const store = useRecipeStore()
+
+    // Premier appel mettant isLoading a true
+    const firstCall = store.fetchRecipes()
+    expect(store.isLoading).toBe(true)
+
+    // Second appel qui doit être bloqué par le store
+    await store.fetchRecipes()
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+
+    resolveFetch(recipesResponse)
+    await firstCall
+
+    // On vérifie les valeurs attendues du premier appel
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(store.recipes).toEqual(recipesResponse.data)
+    expect(store.isLoading).toBe(false)
+  })
+})
 
 describe('useRecipeStore - fetchRandomPick', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.restoreAllMocks()
   })
-
-  const recipes = [{
-    _id: "recipe-1",
-    title: 'Tarte aux pommes',
-    isFavorite: false
-  }, {
-    _id: "recipe-2",
-    title: 'Cookies',
-    isFavorite: false
-  }, {
-    _id: "recipe-3",
-    title: 'Ratatouille',
-    isFavorite: false
-  }, {
-    _id: "recipe-4",
-    title: 'Quiche Lorraine',
-    isFavorite: false
-  }]
 
   it('devrait mettre à jour la liste randomPick après être appelé', async () => {
     const randomRecipes = [
@@ -53,7 +233,7 @@ describe('useRecipeStore - fetchRandomPick', () => {
     expect(store.hasLoaded).toBe(true)
   });
 
-  it("devrait remettre la valeur de isLoading a faux après être appelé", async () => {
+  it("devrait remettre la valeur de isLoading a false après être appelé", async () => {
     const fetchMock = vi.fn()
       .mockResolvedValueOnce({data: recipes})
 
@@ -74,7 +254,7 @@ describe('useRecipeStore - fetchRandomPick', () => {
     expect(store.isLoading).toEqual(false)
   })
 
-  it("devrait mettre la valeur de hasLoaded a vrai après être appelé", async () => {
+  it("devrait mettre la valeur de hasLoaded à vrai après être appelé", async () => {
     const fetchMock = vi.fn()
       .mockResolvedValueOnce({data: recipes})
 
@@ -115,14 +295,14 @@ describe('useRecipeStore - fetchRandomPick', () => {
   })
 
   it("devrait propager l'erreur si fetchRandomPick échoue", async () => {
-  vi.stubGlobal('$fetch', vi.fn().mockRejectedValueOnce(new Error('Erreur serveur')))
+    vi.stubGlobal('$fetch', vi.fn().mockRejectedValueOnce(new Error('Erreur serveur')))
 
-  const store = useRecipeStore()
-  await expect(store.fetchRandomPick()).rejects.toThrow('Erreur serveur')
+    const store = useRecipeStore()
+    await expect(store.fetchRandomPick()).rejects.toThrow('Erreur serveur')
 
-  expect(store.isLoading).toBe(false)
-  expect(store.hasLoaded).toBe(true)
-})
+    expect(store.isLoading).toBe(false)
+    expect(store.hasLoaded).toBe(true)
+  })
 })
 
 describe('useRecipeStore - fetchRecipeById', () => {
@@ -158,7 +338,7 @@ describe('useRecipeStore - fetchRecipeById', () => {
     expect(result).toEqual(recipe)
   })
 
-  it("devrait remettre la valeur de isLoading a faux après être appelé", async () => {
+  it("devrait remettre la valeur de isLoading a false après être appelé", async () => {
     const recipe = {
       _id: "recipe-1",
       title: 'Tarte aux pommes',
@@ -424,7 +604,7 @@ describe('useRecipeStore - deleteRecipe', () => {
     expect(store.recipes).toEqual(recipesResponse.data)
   });
 
-  it('devrait remettre la valeur de isLoading a faux après une suppression', async () => {
+  it('devrait remettre la valeur de isLoading a false après une suppression', async () => {
     const recipesResponse = {
       metadata: {
         page: 1,

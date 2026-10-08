@@ -27,7 +27,7 @@ const items = computed<SortOption[]>(() => {
       label: "Les plus ancients",
       value: {
         type: SortField.createdDate,
-        direction: "dsc"
+        direction: "asc"
       },
       icon: "i-lucide-arrow-down-0-1"
     },
@@ -35,7 +35,7 @@ const items = computed<SortOption[]>(() => {
       label: "Les plus récents",
       value: {
         type: SortField.createdDate,
-        direction: "asc"
+        direction: "dsc"
       },
       icon: "i-lucide-arrow-up-0-1"
     },
@@ -43,7 +43,7 @@ const items = computed<SortOption[]>(() => {
       label: "Modification récentes",
       value: {
         type: SortField.updatedDate,
-        direction: "asc"
+        direction: "dsc"
       },
       icon: "i-lucide-arrow-down-0-1"
     },
@@ -51,7 +51,7 @@ const items = computed<SortOption[]>(() => {
       label: "Premiers modifiés",
       value: {
         type: SortField.updatedDate,
-        direction: "dsc"
+        direction: "asc"
       },
       icon: "i-lucide-arrow-up-0-1"
     },
@@ -59,7 +59,7 @@ const items = computed<SortOption[]>(() => {
       label: "Titre: A-Z",
       value: {
         type: SortField.title,
-        direction: "dsc"
+        direction: "asc"
       },
       icon: "i-lucide-arrow-down-a-z"
     },
@@ -67,12 +67,12 @@ const items = computed<SortOption[]>(() => {
       label: "Titre: Z-A",
       value: {
         type: SortField.title,
-        direction: "asc"
+        direction: "dsc"
       },
       icon: "i-lucide-arrow-down-z-a"
     },
     {
-      label: "Supprimer",
+      label: "Réinitialiser",
       value: undefined,
       icon: "i-lucide-rotate-ccw"
     },
